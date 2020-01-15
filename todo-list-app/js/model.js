@@ -81,6 +81,7 @@
 		this.storage.remove(id, callback);
 	};
 
+	// TODO code à enlever après vérification
 	/**
 	 * WARNING: Will remove ALL data from storage.
 	 *

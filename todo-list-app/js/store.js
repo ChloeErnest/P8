@@ -80,7 +80,7 @@
 
 		callback = callback || function () {};
 
-		// Generate an ID
+		// Generate an ID à modifier TODO
 	    var newId = ""; 
 	    var charset = "0123456789";
 
@@ -119,7 +119,7 @@
 	 * @param {number} id The ID of the item you want to remove
 	 * @param {function} callback The callback to fire after saving
 	 */
-	Store.prototype.remove = function (id, callback) {
+	Store.prototype.remove = function (id, callback) { // TODO des lignes à retirer car inutiles dans les for
 		var data = JSON.parse(localStorage[this._dbName]);
 		var todos = data.todos;
 		var todoId;
