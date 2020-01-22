@@ -1,4 +1,5 @@
 /*global app, jasmine, describe, it, beforeEach, expect */
+import Controller from "../js/controller.js";
 
 describe('controller', function () {
 	'use strict';
@@ -55,7 +56,7 @@ describe('controller', function () {
 	beforeEach(function () {
 		model = jasmine.createSpyObj('model', ['read', 'getCount', 'remove', 'create', 'update']);
 		view = createViewStub();
-		subject = new app.Controller(model, view);
+		subject = new Controller(model, view);
 	});
 
 	it('should show entries on start-up', function () {
