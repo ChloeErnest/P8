@@ -26,6 +26,11 @@ export default class View {
 		this.$newTodo = qs('.new-todo');
 	}
 	
+	/**
+	 * Removes a model from todolist
+	 *
+	 * @param {string} id The ID of the model to remove
+	 */	
 	removeItem(id) {
 		var elem = qs('[data-id="' + id + '"]');
 		
@@ -33,6 +38,12 @@ export default class View {
 			this.$todoList.removeChild(elem);
 		}
 	}
+
+	/**
+	 * Removes a model from todolist
+	 *
+	 * @param {string} id The ID of the model to remove
+	 */	
 	_removeItem(id) {
 		var elem = qs('[data-id="' + id + '"]');
 		
@@ -41,16 +52,33 @@ export default class View {
 		}
 	}
 	
+	/**
+	 * Clear completed todos
+	 *
+	 * @param {number} completedCount Number of todos completed
+	 * @param {boolean} visible If we see or not
+	 */	
 	_clearCompletedButton(completedCount, visible) {
 		this.$clearCompleted.innerHTML = this.template.clearCompletedButton(completedCount);
 		this.$clearCompleted.style.display = visible ? 'block' : 'none';
 	}
-	
+
+	/**
+	 * Set filter on current page
+	 *
+	 * @param {string} currentPage Current page where applicate filter
+	 */	
 	_setFilter(currentPage) {
 		qs('.filters .selected').className = '';
 		qs('.filters [href="#/' + currentPage + '"]').className = 'selected';
 	}
 	
+	/**
+	 * To know if it's completed or not
+	 *
+	 * @param {number} id Id of the current todo
+	 * @param {boolean} completed If it's completed or not
+	 */	
 	_elementComplete(id, completed) {
 		var listItem = qs('[data-id="' + id + '"]');
 		
@@ -64,6 +92,12 @@ export default class View {
 		qs('input', listItem).checked = completed;
 	}
 	
+	/**
+	 * Edit an item
+	 *
+	 * @param {number} id If of the current todo
+	 * @param {string} title Title of the edited todo
+	 */	
 	_editItem(id, title) {
 		var listItem = qs('[data-id="' + id + '"]');
 		
@@ -80,7 +114,13 @@ export default class View {
 		input.focus();
 		input.value = title;
 	}
-	
+
+	/**
+	 * To know if an item is edited
+	 *
+	 * @param {number} id If of the current todo
+	 * @param {string} title Title of the edited todo
+	 */	
 	_editItemDone(id, title) {
 		var listItem = qs('[data-id="' + id + '"]');
 		
@@ -97,7 +137,13 @@ export default class View {
 			label.textContent = title;
 		});
 	}
-	
+
+	/**
+	 * To know what we must to do
+	 *
+	 * @param {string} viewCmd A parameter for the function
+	 * @param {string} parameter The current todo
+	 */	
 	render(viewCmd, parameter) {
 		var self = this;
 		var viewCommands = {
@@ -138,7 +184,12 @@ export default class View {
 		
 		viewCommands[viewCmd]();
 	}
-	
+
+	/**
+	 * To know which item it is
+	 *
+	 * @param {string} element 
+	 */	
 	_itemId(element) {
 		var li = $parent(element, 'li');
 		return parseInt(li.dataset.id, 10);
@@ -155,15 +206,25 @@ export default class View {
 			}
 		});
 		
-		$delegate(self.$todoList, 'li .edit', 'keypress', function (event) {
-			if (event.keyCode === self.ENTER_KEY) {
-				// Remove the cursor from the input when you hit enter just like if it
-				// were a real form
-				this.blur();
-			}
-		});
-	}
+		/**
+	 * Edit an item
+	 *
+	 * @param {function} 
+	 */	
+	$delegate(self.$todoList, 'li .edit', 'keypress', function (event) {
+		if (event.keyCode === self.ENTER_KEY) {
+			// Remove the cursor from the input when you hit enter just like if it
+			// were a real form
+			this.blur();
+		}
+	});
+}
 	
+	/**
+	 * To stop editing a item
+	 *
+	 * @param {handler}
+	 */	
 	_bindItemEditCancel(handler) {
 		var self = this;
 		$delegate(self.$todoList, 'li .edit', 'keyup', function (event) {
@@ -175,7 +236,13 @@ export default class View {
 			}
 		});
 	}
-	
+
+	/**
+	 * To know what todo is selected
+	 *
+	 * @param {event} event To know what's clicked
+	 * @param {handler}
+	 */	
 	bind(event, handler) {
 		var self = this;
 		if (event === 'newTodo') {

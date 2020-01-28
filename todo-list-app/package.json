@@ -1,6 +1,8 @@
 {
   "private": true,
   "dependencies": {
+    "esdoc": "^1.1.0",
+    "esdoc-standard-plugin": "^1.0.0",
     "jasmine": "^3.5.0",
     "todomvc-app-css": "^2.0.1",
     "todomvc-common": "^1.0.1"

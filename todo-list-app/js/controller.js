@@ -117,8 +117,6 @@ export default class Controller {
 		var self = this;
 		 //TODO essai avec un opérateur ternaire à faire vérifier
 		//title[0] === " " ? title = title.slice(1) : title[title.length-1] === " " ? title = title.slice(0, -1) : title.slice(0, 0);
-
-		)
 		
 		while (title[0] === " ") { // TODO remplacer par une ligne de code
 			title = title.slice(1);
