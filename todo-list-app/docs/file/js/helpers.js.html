@@ -2,8 +2,8 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <base data-ice="baseUrl">
-  <title data-ice="title">Home</title>
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">js/helpers.js</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -43,11 +43,61 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="todo-list-app">TODO list app</h1><p>ehncjjdskchzjnndknc</p>
-<p><strong>coucou</strong></p>
-<pre><code class="lang-javascript"><code class="source-code prettyprint">var coucou = &apos;coucou&apos;;</code>
+<div class="content" data-ice="content"><h1 data-ice="title">js/helpers.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">	// Get element(s) by CSS selector:
+	/** @type {function} */
+	export var qs = function (selector, scope) {
+		return (scope || document).querySelector(selector);
+	};
+	/** @type {function} */
+	export var qsa = function (selector, scope) {
+		return (scope || document).querySelectorAll(selector);
+	};
+
+	// addEventListener wrapper:
+	/** @type {function} */
+	export var $on = function (target, type, callback, useCapture) {
+		target.addEventListener(type, callback, !!useCapture);
+	};
+
+	// Attach a handler to event for all elements that match the selector,
+	// now or in the future, based on a root element
+	/** @type {function} */
+	export var $delegate = function (target, selector, type, handler) {
+		function dispatchEvent(event) {
+			var targetElement = event.target;
+			var potentialElements = qsa(selector, target);
+			var hasMatch = Array.prototype.indexOf.call(potentialElements, targetElement) &gt;= 0;
+
+			if (hasMatch) {
+				handler.call(targetElement, event);
+			}
+		}
+
+		// https://developer.mozilla.org/en-US/docs/Web/Events/blur
+		var useCapture = type === &apos;blur&apos; || type === &apos;focus&apos;;
+
+		$on(target, type, dispatchEvent, useCapture);
+	};
+
+	// Find the element&apos;s parent with the given tag name:
+	// $parent(qs(&apos;a&apos;), &apos;div&apos;);
+	/** @type {function} */
+	export var $parent = function (element, tagName) {
+		if (!element.parentNode) {
+			return;
+		}
+		if (element.parentNode.tagName.toLowerCase() === tagName.toLowerCase()) {
+			return element.parentNode;
+		}
+		return $parent(element.parentNode, tagName);
+	};
+
+	// Allow for looping on nodes by chaining:
+	// qsa(&apos;.foo&apos;).forEach(function () {})
+	NodeList.prototype.forEach = Array.prototype.forEach;
 </code></pre>
-</div>
+
 </div>
 
 <footer class="footer">

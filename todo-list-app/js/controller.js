@@ -47,7 +47,7 @@ export default class Controller {
 	/**
 	* Loads and initialises the view
 	*
-	* @param {string} '' | 'active' | 'completed'
+	* @param {string} locationHash '' | 'active' | 'completed'
 	*/
 	setView(locationHash) {
 		var route = locationHash.split('/')[1];
@@ -193,7 +193,7 @@ export default class Controller {
 	* in storage based on the checkbox's state.
 	*
 	* @param {number} id The ID of the element to complete or uncomplete
-	* @param {object} checkbox The checkbox to check the state of complete
+	* @param {object} completed The checkbox to check the state of complete
 	*                          or not
 	* @param {boolean|undefined} silent Prevent re-filtering the todo items
 	*/

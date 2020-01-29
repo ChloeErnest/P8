@@ -1,15 +1,20 @@
 /*global qs, qsa, $on, $parent, $delegate */
 import {qs, qsa, $on, $delegate, $parent} from "./helpers.js";
 
+/**
+* View that abstracts away the browser's DOM completely.
+* It has two simple entry points:
+*
+*   - bind(eventName, handler)
+*     Takes a todo application event and registers the handler
+*   - render(command, parameterObject)
+*     Renders the given command with the options
+*/
 export default class View {
 	/**
-	* View that abstracts away the browser's DOM completely.
-	* It has two simple entry points:
-	*
-	*   - bind(eventName, handler)
-	*     Takes a todo application event and registers the handler
-	*   - render(command, parameterObject)
-	*     Renders the given command with the options
+	* creates a new view from the next template instance
+	* 
+	* @param {Template} template 
 	*/
 	constructor(template) {
 		this.template = template;
@@ -27,10 +32,10 @@ export default class View {
 	}
 	
 	/**
-	 * Removes a model from todolist
-	 *
-	 * @param {string} id The ID of the model to remove
-	 */	
+	* Removes a todo from the model
+	*
+	* @param {string} id The ID of the todo to remove
+	*/	
 	removeItem(id) {
 		var elem = qs('[data-id="' + id + '"]');
 		
@@ -38,12 +43,12 @@ export default class View {
 			this.$todoList.removeChild(elem);
 		}
 	}
-
+	
 	/**
-	 * Removes a model from todolist
-	 *
-	 * @param {string} id The ID of the model to remove
-	 */	
+	* Removes a todo from the todolist
+	*
+	* @param {string} id The ID of the todo to remove
+	*/	
 	_removeItem(id) {
 		var elem = qs('[data-id="' + id + '"]');
 		
@@ -53,32 +58,32 @@ export default class View {
 	}
 	
 	/**
-	 * Clear completed todos
-	 *
-	 * @param {number} completedCount Number of todos completed
-	 * @param {boolean} visible If we see or not
-	 */	
+	* Generate clear button
+	*
+	* @param {number} completedCount Number of todos completed
+	* @param {boolean} visible If we see the button or not
+	*/	
 	_clearCompletedButton(completedCount, visible) {
 		this.$clearCompleted.innerHTML = this.template.clearCompletedButton(completedCount);
 		this.$clearCompleted.style.display = visible ? 'block' : 'none';
 	}
-
+	
 	/**
-	 * Set filter on current page
-	 *
-	 * @param {string} currentPage Current page where applicate filter
-	 */	
+	* update selected filter visually
+	*
+	* @param {string} currentPage Current page where applicate filter
+	*/	
 	_setFilter(currentPage) {
 		qs('.filters .selected').className = '';
 		qs('.filters [href="#/' + currentPage + '"]').className = 'selected';
 	}
 	
 	/**
-	 * To know if it's completed or not
-	 *
-	 * @param {number} id Id of the current todo
-	 * @param {boolean} completed If it's completed or not
-	 */	
+	* Visually update the status of a todo
+	*
+	* @param {number} id Id of the current todo
+	* @param {boolean} completed If it's completed or not
+	*/	
 	_elementComplete(id, completed) {
 		var listItem = qs('[data-id="' + id + '"]');
 		
@@ -93,11 +98,11 @@ export default class View {
 	}
 	
 	/**
-	 * Edit an item
-	 *
-	 * @param {number} id If of the current todo
-	 * @param {string} title Title of the edited todo
-	 */	
+	* Initiate item editing
+	*
+	* @param {number} id If of the todo to edit
+	* @param {string} title Title of the edited todo
+	*/	
 	_editItem(id, title) {
 		var listItem = qs('[data-id="' + id + '"]');
 		
@@ -114,13 +119,13 @@ export default class View {
 		input.focus();
 		input.value = title;
 	}
-
+	
 	/**
-	 * To know if an item is edited
-	 *
-	 * @param {number} id If of the current todo
-	 * @param {string} title Title of the edited todo
-	 */	
+	* To stop editing a given todo
+	*
+	* @param {number} id If of the current todo
+	* @param {string} title Title of the edited todo
+	*/	
 	_editItemDone(id, title) {
 		var listItem = qs('[data-id="' + id + '"]');
 		
@@ -137,13 +142,13 @@ export default class View {
 			label.textContent = title;
 		});
 	}
-
+	
 	/**
-	 * To know what we must to do
-	 *
-	 * @param {string} viewCmd A parameter for the function
-	 * @param {string} parameter The current todo
-	 */	
+	* To update view depending on a command
+	*
+	* @param {string} viewCmd name of the command
+	* @param {object} parameter a parameter to pass to the command
+	*/	
 	render(viewCmd, parameter) {
 		var self = this;
 		var viewCommands = {
@@ -184,17 +189,23 @@ export default class View {
 		
 		viewCommands[viewCmd]();
 	}
-
+	
 	/**
-	 * To know which item it is
-	 *
-	 * @param {string} element 
-	 */	
+	* Return parent's id
+	*
+	* @param {object} element a html element
+	* @return {number} the id of the parent todo
+	*/	
 	_itemId(element) {
 		var li = $parent(element, 'li');
 		return parseInt(li.dataset.id, 10);
 	}
 	
+	/**
+	* defines a callback for handling the end of the edition of a todo
+	* 
+	* @param {function} handler callback which takes a todo in argument
+	*/
 	_bindItemEditDone(handler) {
 		var self = this;
 		$delegate(self.$todoList, 'li .edit', 'blur', function () {
@@ -206,25 +217,21 @@ export default class View {
 			}
 		});
 		
-		/**
-	 * Edit an item
-	 *
-	 * @param {function} 
-	 */	
-	$delegate(self.$todoList, 'li .edit', 'keypress', function (event) {
-		if (event.keyCode === self.ENTER_KEY) {
-			// Remove the cursor from the input when you hit enter just like if it
-			// were a real form
-			this.blur();
-		}
-	});
-}
+		
+		$delegate(self.$todoList, 'li .edit', 'keypress', function (event) {
+			if (event.keyCode === self.ENTER_KEY) {
+				// Remove the cursor from the input when you hit enter just like if it
+				// were a real form
+				this.blur();
+			}
+		});
+	}
 	
 	/**
-	 * To stop editing a item
-	 *
-	 * @param {handler}
-	 */	
+	* Add a callback to the escape key to cancel edition
+	*
+	* @param {function} handler binds a callback to cancel edit
+	*/	
 	_bindItemEditCancel(handler) {
 		var self = this;
 		$delegate(self.$todoList, 'li .edit', 'keyup', function (event) {
@@ -236,13 +243,13 @@ export default class View {
 			}
 		});
 	}
-
+	
 	/**
-	 * To know what todo is selected
-	 *
-	 * @param {event} event To know what's clicked
-	 * @param {handler}
-	 */	
+	* binds custom events to the view
+	*
+	* @param {string} event event's name
+	* @param {function} handler event's callback
+	*/	
 	bind(event, handler) {
 		var self = this;
 		if (event === 'newTodo') {

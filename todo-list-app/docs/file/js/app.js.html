@@ -2,8 +2,8 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <base data-ice="baseUrl">
-  <title data-ice="title">Home</title>
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">js/app.js</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -43,11 +43,37 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="todo-list-app">TODO list app</h1><p>ehncjjdskchzjnndknc</p>
-<p><strong>coucou</strong></p>
-<pre><code class="lang-javascript"><code class="source-code prettyprint">var coucou = &apos;coucou&apos;;</code>
+<div class="content" data-ice="content"><h1 data-ice="title">js/app.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/*global app, $on */
+import {$on} from &quot;./helpers.js&quot;;
+import Store from &quot;./store.js&quot;;
+import Model from &quot;./model.js&quot;;
+import Template from &quot;./template.js&quot;;
+import View from &quot;./view.js&quot;;
+import Controller from &quot;./controller.js&quot;;
+
+	/**
+	 * Sets up a brand new Todo list.
+	 *
+	 * @param {string} name The name of your new to do list.
+	 */
+	function Todo(name) {
+		this.storage = new Store(name);
+		this.model = new Model(this.storage);
+		this.template = new Template();
+		this.view = new View(this.template);
+		this.controller = new Controller(this.model, this.view);
+	}
+
+	var todo = new Todo(&apos;todos-vanillajs&apos;);
+
+	function setView() {
+		todo.controller.setView(document.location.hash);
+	}
+	$on(window, &apos;load&apos;, setView);
+	$on(window, &apos;hashchange&apos;, setView);
 </code></pre>
-</div>
+
 </div>
 
 <footer class="footer">

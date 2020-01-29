@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">js/model.js</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/controller.js~Controller.html">Controller</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/model.js~Model.html">Model</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/store.js~Store.html">Store</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/template.js~Template.html">Template</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/view.js~View.html">View</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-$delegate">$delegate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-$on">$on</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-$parent">$parent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-qs">qs</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-qsa">qsa</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">js/model.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">export default class Model {
+
+	/**
+	 * Creates a new Model instance and hooks up the storage.
+	 *
+	 * @constructor
+	 * @param {object} storage A reference to the client side storage class
+	 */
+	constructor(storage) {
+		this.storage = storage;
+	}
+		
+	/**
+	 * Creates a new todo model
+	 *
+	 * @param {string} [title] The title of the task
+	 * @param {function} [callback] The callback to fire after the model is created
+	 */
+	create(title, callback) {
+		title = title || &apos;&apos;;
+		callback = callback || function () {};
+		
+		var newItem = {
+			title: title.trim(),
+			completed: false
+		};
+		
+		this.storage.save(newItem, callback);
+	}
+	
+	/**
+	 * Finds and returns a model in storage. If no query is given it&apos;ll simply
+	 * return everything. If you pass in a string or number it&apos;ll look that up as
+	 * the ID of&#xA0;the model to find. Lastly, you can pass it an object to match
+	 * against.
+	 *
+	 * @param {string|number|object} [query] A query to match models against
+	 * @param {function} [callback] The callback to fire after the model is found
+	 *
+	 * @example
+	 * model.read(1, func); // Will find the model with an ID of 1
+	 * model.read(&apos;1&apos;); // Same as above
+	 * //Below will find a model with foo equalling bar and hello equalling world.
+	 * model.read({ foo: &apos;bar&apos;, hello: &apos;world&apos; });
+	 */
+	read(query, callback) {
+		var queryType = typeof query;
+		callback = callback || function () {};
+		
+		if (queryType === &apos;function&apos;) {
+			callback = query;
+			return this.storage.findAll(callback);
+		} else if (queryType === &apos;string&apos; || queryType === &apos;number&apos;) {
+			query = parseInt(query, 10);
+			this.storage.find({ id: query }, callback);
+		} else {
+			this.storage.find(query, callback);
+		}	
+	}
+	
+	/**
+	 * Updates a model by giving it an ID, data to update, and a callback to fire when
+	 * the update is complete.
+	 *
+	 * @param {number} id The id of the model to update
+	 * @param {object} data The properties to update and their new value
+	 * @param {function} callback The callback to fire when the update is complete.
+	 */
+	update(id, data, callback) {
+		this.storage.save(data, callback, id);
+	}
+	
+	/**
+	 * Removes a model from storage
+	 *
+	 * @param {number} id The ID of the model to remove
+	 * @param {function} callback The callback to fire when the removal is complete.
+	 */
+	remove(id, callback) {
+		this.storage.remove(id, callback);
+	}
+	
+	/**
+	 * Returns a count of all todos
+	 * @param {function} callback The callback to fire when the count is done.
+	 */
+	getCount(callback) {
+		var todos = {
+			active: 0,
+			completed: 0,
+			total: 0
+		};
+		
+		this.storage.findAll(function (data) {
+			data.forEach(function (todo) {
+				if (todo.completed) {
+					todos.completed++;
+				} else {
+					todos.active++;
+				}
+				
+				todos.total++;
+			});
+			callback(todos);
+		});
+	}
+}
+
+
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

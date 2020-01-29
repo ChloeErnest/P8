@@ -9,5 +9,10 @@
   },
   "devDependencies": {
     "jasmine-core": "^2.0.0"
-  }
+  },
+  "scripts": {
+    "docs": "./node_modules/.bin/esdoc",
+    "start": "http-server -o /",
+    "test": "http-server -o /test/SpecRunner.html"
+  }  
 }

@@ -1,1 +1,1 @@
-{ "source": "./src", "destination": "./docs", "plugins": [{"name": "esdoc-standard-plugin"}]}
+{ "source": "./js", "destination": "./docs", "plugins": [{"name": "esdoc-standard-plugin"}]}
