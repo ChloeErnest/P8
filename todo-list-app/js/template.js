@@ -27,6 +27,11 @@ var escape = function (string) {
 * @constructor
 */
 export default class Template {
+	/**
+	* creates a new template
+	* 
+	* @param {object} Template
+	*/
 	constructor() {
 		this.defaultTemplate
 		=	'<li data-id="{{id}}" class="{{completed}}">'
