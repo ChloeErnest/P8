@@ -13,7 +13,7 @@
 
 <header>
   <a href="./">Home</a>
-  
+  <a href="./manual/index.html" data-ice="manualHeaderLink">Manual</a>
   <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
   
@@ -67,12 +67,16 @@ var escape = function (string) {
 };
 
 
-
+/**
+* Sets up defaults for all the Template methods such as a default template
+*
+* @constructor
+*/
 export default class Template {
 	/**
-	* Sets up defaults for all the Template methods such as a default template
-	*
-	* @constructor
+	* creates a new template
+	* 
+	* @param {object} Template
 	*/
 	constructor() {
 		this.defaultTemplate
@@ -86,73 +90,73 @@ export default class Template {
 	}
 	
 	/**
-	 * Creates an &lt;li&gt; HTML string and returns it for placement in your app.
-	 *
-	 * NOTE: In real life you should be using a templating engine such as Mustache
-	 * or Handlebars, however, this is a vanilla JS example.
-	 *
-	 * @param {object} data The object containing keys you want to find in the
-	 *                      template to replace.
-	 * @returns {string} HTML String of an &lt;li&gt; element
-	 *
-	 * @example
-	 * view.show({
-	 *	id: 1,
-	 *	title: &quot;Hello World&quot;,
-	 *	completed: 0,
-	 * });
-	 */
-	show(data) {
-		var i, l;
-		var view = &apos;&apos;;
-		
-		for (i = 0, l = data.length; i &lt; l; i++) {
-			var template = this.defaultTemplate;
-			var completed = &apos;&apos;;
-			var checked = &apos;&apos;;
+	* Creates an &lt;li&gt; HTML string and returns it for placement in your app.
+	*
+	* NOTE: In real life you should be using a templating engine such as Mustache
+	* or Handlebars, however, this is a vanilla JS example.
+	*
+	* @param {object} data The object containing keys you want to find in the
+	*                      template to replace.
+	* @returns {string} HTML String of an &lt;li&gt; element
+	*
+	* @example
+	* view.show({
+		*	id: 1,
+		*	title: &quot;Hello World&quot;,
+		*	completed: 0,
+		* });
+		*/
+		show(data) {
+			var i, l;
+			var view = &apos;&apos;;
 			
-			if (data[i].completed) {
-				completed = &apos;completed&apos;;
-				checked = &apos;checked&apos;;
+			for (i = 0, l = data.length; i &lt; l; i++) {
+				var template = this.defaultTemplate;
+				var completed = &apos;&apos;;
+				var checked = &apos;&apos;;
+				
+				if (data[i].completed) {
+					completed = &apos;completed&apos;;
+					checked = &apos;checked&apos;;
+				}
+				
+				template = template.replace(&apos;{{id}}&apos;, data[i].id);
+				template = template.replace(&apos;{{title}}&apos;, escape(data[i].title));
+				template = template.replace(&apos;{{completed}}&apos;, completed);
+				template = template.replace(&apos;{{checked}}&apos;, checked);
+				
+				view = view + template;
 			}
 			
-			template = template.replace(&apos;{{id}}&apos;, data[i].id);
-			template = template.replace(&apos;{{title}}&apos;, escape(data[i].title));
-			template = template.replace(&apos;{{completed}}&apos;, completed);
-			template = template.replace(&apos;{{checked}}&apos;, checked);
-			
-			view = view + template;
+			return view;
 		}
 		
-		return view;
-	}
-	
-	/**
-	 * Displays a counter of how many to dos are left to complete
-	 *
-	 * @param {number} activeTodos The number of active todos.
-	 * @returns {string} String containing the count
-	 */
-	itemCounter(activeTodos) {
-		var plural = activeTodos === 1 ? &apos;&apos; : &apos;s&apos;;
-		return &apos;&lt;strong&gt;&apos; + activeTodos + &apos;&lt;/strong&gt; item&apos; + plural + &apos; left&apos;;
-	}
-	
-	/**
-	 * Updates the text within the &quot;Clear completed&quot; button
-	 *
-	 * @param  {[object]} completedTodos The number of completed todos.
-	 * @returns {string} String containing the count
-	 */
-	clearCompletedButton(completedTodos) {
-		if (completedTodos &gt; 0) {
-			return &apos;Clear completed&apos;;
-		} else {
-			return &apos;&apos;;
+		/**
+		* Displays a counter of how many to dos are left to complete
+		*
+		* @param {number} activeTodos The number of active todos.
+		* @returns {string} String containing the count
+		*/
+		itemCounter(activeTodos) {
+			var plural = activeTodos === 1 ? &apos;&apos; : &apos;s&apos;;
+			return &apos;&lt;strong&gt;&apos; + activeTodos + &apos;&lt;/strong&gt; item&apos; + plural + &apos; left&apos;;
+		}
+		
+		/**
+		* Updates the text within the &quot;Clear completed&quot; button
+		*
+		* @param  {[object]} completedTodos The number of completed todos.
+		* @returns {string} String containing the count
+		*/
+		clearCompletedButton(completedTodos) {
+			if (completedTodos &gt; 0) {
+				return &apos;Clear completed&apos;;
+			} else {
+				return &apos;&apos;;
+			}
 		}
 	}
-}
-</code></pre>
+	</code></pre>
 
 </div>
 

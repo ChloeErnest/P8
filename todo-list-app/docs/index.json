@@ -649,7 +649,7 @@
     "__docId__": 52,
     "kind": "file",
     "name": "js/controller.js",
-    "content": "export default class Controller {\n\t/**\n\t* Takes a model and view and acts as the controller between them\n\t*\n\t* @constructor\n\t* @param {object} model The model instance\n\t* @param {object} view The view instance\n\t*/\n\tconstructor(model, view) {\n\t\tvar self = this;\n\t\tself.model = model;\n\t\tself.view = view;\n\t\t\n\t\tself.view.bind('newTodo', function (title) {\n\t\t\tself.addItem(title);\n\t\t});\n\t\t\n\t\tself.view.bind('itemEdit', function (item) {\n\t\t\tself.editItem(item.id);\n\t\t});\n\t\t\n\t\tself.view.bind('itemEditDone', function (item) {\n\t\t\tself.editItemSave(item.id, item.title);\n\t\t});\n\t\t\n\t\tself.view.bind('itemEditCancel', function (item) {\n\t\t\tself.editItemCancel(item.id);\n\t\t});\n\t\t\n\t\tself.view.bind('itemRemove', function (item) {\n\t\t\tself.removeItem(item.id);\n\t\t});\n\t\t\n\t\tself.view.bind('itemToggle', function (item) {\n\t\t\tself.toggleComplete(item.id, item.completed);\n\t\t});\n\t\t\n\t\tself.view.bind('removeCompleted', function () {\n\t\t\tself.removeCompletedItems();\n\t\t});\n\t\t\n\t\tself.view.bind('toggleAll', function (status) {\n\t\t\tself.toggleAll(status.completed);\n\t\t});\n\t}\n\t\n\t/**\n\t* Loads and initialises the view\n\t*\n\t* @param {string} locationHash '' | 'active' | 'completed'\n\t*/\n\tsetView(locationHash) {\n\t\tvar route = locationHash.split('/')[1];\n\t\tvar page = route || '';\n\t\tthis._updateFilterState(page);\n\t}\n\t\n\t/**\n\t* An event to fire on load. Will get all items and display them in the\n\t* todo-list\n\t*/\n\tshowAll() {\n\t\tvar self = this;\n\t\tself.model.read(function (data) {\n\t\t\tself.view.render('showEntries', data);\n\t\t});\n\t}\n\t\n\t/**\n\t* Renders all active tasks\n\t*/\n\tshowActive() {\n\t\tvar self = this;\n\t\tself.model.read({ completed: false }, function (data) {\n\t\t\tself.view.render('showEntries', data);\n\t\t});\n\t}\n\t\n\t/**\n\t* Renders all completed tasks\n\t*/\n\tshowCompleted() {\n\t\tvar self = this;\n\t\tself.model.read({ completed: true }, function (data) {\n\t\t\tself.view.render('showEntries', data);\n\t\t});\n\t}\n\t\n\t/**\n\t* An event to fire whenever you want to add an item. Simply pass in the event\n\t* object and it'll handle the DOM insertion and saving of the new item.\n\t*/\n\taddItem(title) {\n\t\tvar self = this;\n\t\t\n\t\tif (title.trim() === '') {\n\t\t\treturn;\n\t\t}\n\t\t\n\t\tself.model.create(title, function () {\n\t\t\tself.view.render('clearNewTodo');\n\t\t\tself._filter(true);\n\t\t});\n\t}\n\t\n\t/*\n\t* Triggers the item editing mode.\n\t*/\n\teditItem(id) {\n\t\tvar self = this;\n\t\tself.model.read(id, function (data) {\n\t\t\tself.view.render('editItem', {id: id, title: data[0].title});\n\t\t});\n\t}\n\t\n\teditItemSave(id, title) {\n\t\tvar self = this;\n\t\t //TODO essai avec un opérateur ternaire à faire vérifier\n\t\t//title[0] === \" \" ? title = title.slice(1) : title[title.length-1] === \" \" ? title = title.slice(0, -1) : title.slice(0, 0);\n\t\t\n\t\twhile (title[0] === \" \") { // TODO remplacer par une ligne de code\n\t\t\ttitle = title.slice(1);\n\t\t}\n\t\t\n\t\twhile (title[title.length-1] === \" \") {\n\t\t\ttitle = title.slice(0, -1);\n\t\t} //stop\n\t\t\n\t\tif (title.length !== 0) {\n\t\t\tself.model.update(id, {title: title}, function () {\n\t\t\t\tself.view.render('editItemDone', {id: id, title: title});\n\t\t\t});\n\t\t} else {\n\t\t\tself.removeItem(id);\n\t\t}\n\t}\n\t\n\t\n\t/*\n\t* Cancels the item editing mode.\n\t*/\n\teditItemCancel(id) {\n\t\tvar self = this;\n\t\tself.model.read(id, function (data) {\n\t\t\tself.view.render('editItemDone', {id: id, title: data[0].title});\n\t\t});\n\t}\n\t\n\t/**\n\t* By giving it an ID it'll find the DOM element matching that ID,\n\t* remove it from the DOM and also remove it from storage.\n\t*\n\t* @param {number} id The ID of the item to remove from the DOM and\n\t* storage\n\t*/\n\tremoveItem(id) {\n\t\tvar self = this;\n\t\tvar items;\n\t\tself.model.read(function(data) {\n\t\t\titems = data;\n\t\t});\n\t\t\n\t\titems.forEach(function(item) {\n\t\t\tif (item.id === id) {\n\t\t\t\tconsole.log(\"Element with ID: \" + id + \" has been removed.\");\n\t\t\t}\n\t\t});\n\t\t\n\t\tself.model.remove(id, function () {\n\t\t\tself.view.render('removeItem', id);\n\t\t});\n\t\t\n\t\tself._filter();\n\t}\n\t\n\t\n\t/**\n\t* Will remove all completed items from the DOM and storage.\n\t*/\n\tremoveCompletedItems() {\n\t\tvar self = this;\n\t\tself.model.read({ completed: true }, function (data) {\n\t\t\tdata.forEach(function (item) {\n\t\t\t\tself.removeItem(item.id);\n\t\t\t});\n\t\t});\n\t\t\n\t\tself._filter();\n\t}\n\t\n\t/**\n\t* Give it an ID of a model and a checkbox and it will update the item\n\t* in storage based on the checkbox's state.\n\t*\n\t* @param {number} id The ID of the element to complete or uncomplete\n\t* @param {object} completed The checkbox to check the state of complete\n\t*                          or not\n\t* @param {boolean|undefined} silent Prevent re-filtering the todo items\n\t*/\n\ttoggleComplete(id, completed, silent) {\n\t\tvar self = this;\n\t\tself.model.update(id, { completed: completed }, function () {\n\t\t\tself.view.render('elementComplete', {\n\t\t\t\tid: id,\n\t\t\t\tcompleted: completed\n\t\t\t});\n\t\t});\n\t\t\n\t\tif (!silent) {\n\t\t\tself._filter();\n\t\t}\n\t}\n\t\n\t/**\n\t* Will toggle ALL checkboxes' on/off state and completeness of models.\n\t* Just pass in the event object.\n\t*/\n\ttoggleAll(completed) {\n\t\tvar self = this;\n\t\tself.model.read({ completed: !completed }, function (data) {\n\t\t\tdata.forEach(function (item) {\n\t\t\t\tself.toggleComplete(item.id, completed, true);\n\t\t\t});\n\t\t});\n\t\t\n\t\tself._filter();\n\t}\n\t\n\t/**\n\t* Updates the pieces of the page which change depending on the remaining\n\t* number of todos.\n\t*/\n\t_updateCount() {\n\t\tvar self = this;\n\t\tself.model.getCount(function (todos) {\n\t\t\tself.view.render('updateElementCount', todos.active);\n\t\t\tself.view.render('clearCompletedButton', {\n\t\t\t\tcompleted: todos.completed,\n\t\t\t\tvisible: todos.completed > 0\n\t\t\t});\n\t\t\t\n\t\t\tself.view.render('toggleAll', {checked: todos.completed === todos.total});\n\t\t\tself.view.render('contentBlockVisibility', {visible: todos.total > 0});\n\t\t});\n\t}\n\t\n\t/**\n\t* Re-filters the todo items, based on the active route.\n\t* @param {boolean|undefined} force  forces a re-painting of todo items.\n\t*/\n\t_filter(force) {\n\t\tvar activeRoute = this._activeRoute.charAt(0).toUpperCase() + this._activeRoute.substr(1);\n\t\t\n\t\t// Update the elements on the page, which change with each completed todo\n\t\tthis._updateCount();\n\t\t\n\t\t// If the last active route isn't \"All\", or we're switching routes, we\n\t\t// re-create the todo item elements, calling:\n\t\t//   this.show[All|Active|Completed]();\n\t\tif (force || this._lastActiveRoute !== 'All' || this._lastActiveRoute !== activeRoute) {\n\t\t\tthis['show' + activeRoute]();\n\t\t}\n\t\t\n\t\tthis._lastActiveRoute = activeRoute;\n\t}\n\t\n\t\n\t/**\n\t* Simply updates the filter nav's selected states\n\t*/\n\t_updateFilterState(currentPage) {\n\t\tthis._activeRoute = currentPage;\n\t\t\n\t\tif (currentPage === '') {\n\t\t\tthis._activeRoute = 'All';\n\t\t}\n\t\t\n\t\tthis._filter();\n\t\t\n\t\tthis.view.render('setFilter', currentPage);\n\t}\n}\n",
+    "content": "\t/**\n\t* Takes a model and view and acts as the controller between them\n\t*\n\t* @constructor\n\t*/\n\texport default class Controller {\n\t\t/** \n\t\t* @param {object} model The model instance\n\t\t* @param {object} view The view instance\n\t\t*/\n\t\tconstructor(model, view) {\n\t\t\tvar self = this;\n\t\t\tself.model = model;\n\t\t\tself.view = view;\n\t\t\t\n\t\t\tself.view.bind('newTodo', function (title) {\n\t\t\t\tself.addItem(title);\n\t\t\t});\n\t\t\t\n\t\t\tself.view.bind('itemEdit', function (item) {\n\t\t\t\tself.editItem(item.id);\n\t\t\t});\n\t\t\t\n\t\t\tself.view.bind('itemEditDone', function (item) {\n\t\t\t\tself.editItemSave(item.id, item.title);\n\t\t\t});\n\t\t\t\n\t\t\tself.view.bind('itemEditCancel', function (item) {\n\t\t\t\tself.editItemCancel(item.id);\n\t\t\t});\n\t\t\t\n\t\t\tself.view.bind('itemRemove', function (item) {\n\t\t\t\tself.removeItem(item.id);\n\t\t\t});\n\t\t\t\n\t\t\tself.view.bind('itemToggle', function (item) {\n\t\t\t\tself.toggleComplete(item.id, item.completed);\n\t\t\t});\n\t\t\t\n\t\t\tself.view.bind('removeCompleted', function () {\n\t\t\t\tself.removeCompletedItems();\n\t\t\t});\n\t\t\t\n\t\t\tself.view.bind('toggleAll', function (status) {\n\t\t\t\tself.toggleAll(status.completed);\n\t\t\t});\n\t\t}\n\t\t\n\t\t/**\n\t\t* Loads and initialises the view\n\t\t*\n\t\t* @param {string} locationHash '' | 'active' | 'completed'\n\t\t*/\n\t\tsetView(locationHash) {\n\t\t\tvar route = locationHash.split('/')[1];\n\t\t\tvar page = route || '';\n\t\t\tthis._updateFilterState(page);\n\t\t}\n\t\t\n\t\t/**\n\t\t* An event to fire on load. Will get all items and display them in the\n\t\t* todo-list\n\t\t*/\n\t\tshowAll() {\n\t\t\tvar self = this;\n\t\t\tself.model.read(function (data) {\n\t\t\t\tself.view.render('showEntries', data);\n\t\t\t});\n\t\t}\n\t\t\n\t\t/**\n\t\t* Renders all active tasks\n\t\t*/\n\t\tshowActive() {\n\t\t\tvar self = this;\n\t\t\tself.model.read({ completed: false }, function (data) {\n\t\t\t\tself.view.render('showEntries', data);\n\t\t\t});\n\t\t}\n\t\t\n\t\t/**\n\t\t* Renders all completed tasks\n\t\t*/\n\t\tshowCompleted() {\n\t\t\tvar self = this;\n\t\t\tself.model.read({ completed: true }, function (data) {\n\t\t\t\tself.view.render('showEntries', data);\n\t\t\t});\n\t\t}\n\t\t\n\t\t/**\n\t\t* An event to fire whenever you want to add an item. Simply pass in the event\n\t\t* object and it'll handle the DOM insertion and saving of the new item.\n\t\t*/\n\t\taddItem(title) {\n\t\t\tvar self = this;\n\t\t\t\n\t\t\tif (title.trim() === '') {\n\t\t\t\treturn;\n\t\t\t}\n\t\t\t\n\t\t\tself.model.create(title, function () {\n\t\t\t\tself.view.render('clearNewTodo');\n\t\t\t\tself._filter(true);\n\t\t\t});\n\t\t}\n\t\t\n\t\t/*\n\t\t* Triggers the item editing mode.\n\t\t*/\n\t\teditItem(id) {\n\t\t\tvar self = this;\n\t\t\tself.model.read(id, function (data) {\n\t\t\t\tself.view.render('editItem', {id: id, title: data[0].title});\n\t\t\t});\n\t\t}\n\t\t\n\t\teditItemSave(id, title) {\n\t\t\tvar self = this;\n\t\t\t//TODO essai avec un opérateur ternaire à faire vérifier\n\t\t\t//title[0] === \" \" ? title = title.slice(1) : title[title.length-1] === \" \" ? title = title.slice(0, -1) : title.slice(0, 0);\n\t\t\t\n\t\t\twhile (title[0] === \" \") { // TODO remplacer par une ligne de code\n\t\t\t\ttitle = title.slice(1);\n\t\t\t}\n\t\t\t\n\t\t\twhile (title[title.length-1] === \" \") {\n\t\t\t\ttitle = title.slice(0, -1);\n\t\t\t} //stop\n\t\t\t\n\t\t\tif (title.length !== 0) {\n\t\t\t\tself.model.update(id, {title: title}, function () {\n\t\t\t\t\tself.view.render('editItemDone', {id: id, title: title});\n\t\t\t\t});\n\t\t\t} else {\n\t\t\t\tself.removeItem(id);\n\t\t\t}\n\t\t}\n\t\t\n\t\t\n\t\t/*\n\t\t* Cancels the item editing mode.\n\t\t*/\n\t\teditItemCancel(id) {\n\t\t\tvar self = this;\n\t\t\tself.model.read(id, function (data) {\n\t\t\t\tself.view.render('editItemDone', {id: id, title: data[0].title});\n\t\t\t});\n\t\t}\n\t\t\n\t\t/**\n\t\t* By giving it an ID it'll find the DOM element matching that ID,\n\t\t* remove it from the DOM and also remove it from storage.\n\t\t*\n\t\t* @param {number} id The ID of the item to remove from the DOM and\n\t\t* storage\n\t\t*/\n\t\tremoveItem(id) {\n\t\t\tvar self = this;\n\t\t\tvar items;\n\t\t\tself.model.read(function(data) {\n\t\t\t\titems = data;\n\t\t\t});\n\t\t\t\n\t\t\titems.forEach(function(item) {\n\t\t\t\tif (item.id === id) {\n\t\t\t\t\tconsole.log(\"Element with ID: \" + id + \" has been removed.\");\n\t\t\t\t}\n\t\t\t});\n\t\t\t\n\t\t\tself.model.remove(id, function () {\n\t\t\t\tself.view.render('removeItem', id);\n\t\t\t});\n\t\t\t\n\t\t\tself._filter();\n\t\t}\n\t\t\n\t\t\n\t\t/**\n\t\t* Will remove all completed items from the DOM and storage.\n\t\t*/\n\t\tremoveCompletedItems() {\n\t\t\tvar self = this;\n\t\t\tself.model.read({ completed: true }, function (data) {\n\t\t\t\tdata.forEach(function (item) {\n\t\t\t\t\tself.removeItem(item.id);\n\t\t\t\t});\n\t\t\t});\n\t\t\t\n\t\t\tself._filter();\n\t\t}\n\t\t\n\t\t/**\n\t\t* Give it an ID of a model and a checkbox and it will update the item\n\t\t* in storage based on the checkbox's state.\n\t\t*\n\t\t* @param {number} id The ID of the element to complete or uncomplete\n\t\t* @param {object} completed The checkbox to check the state of complete\n\t\t*                          or not\n\t\t* @param {boolean|undefined} silent Prevent re-filtering the todo items\n\t\t*/\n\t\ttoggleComplete(id, completed, silent) {\n\t\t\tvar self = this;\n\t\t\tself.model.update(id, { completed: completed }, function () {\n\t\t\t\tself.view.render('elementComplete', {\n\t\t\t\t\tid: id,\n\t\t\t\t\tcompleted: completed\n\t\t\t\t});\n\t\t\t});\n\t\t\t\n\t\t\tif (!silent) {\n\t\t\t\tself._filter();\n\t\t\t}\n\t\t}\n\t\t\n\t\t/**\n\t\t* Will toggle ALL checkboxes' on/off state and completeness of models.\n\t\t* Just pass in the event object.\n\t\t*/\n\t\ttoggleAll(completed) {\n\t\t\tvar self = this;\n\t\t\tself.model.read({ completed: !completed }, function (data) {\n\t\t\t\tdata.forEach(function (item) {\n\t\t\t\t\tself.toggleComplete(item.id, completed, true);\n\t\t\t\t});\n\t\t\t});\n\t\t\t\n\t\t\tself._filter();\n\t\t}\n\t\t\n\t\t/**\n\t\t* Updates the pieces of the page which change depending on the remaining\n\t\t* number of todos.\n\t\t*/\n\t\t_updateCount() {\n\t\t\tvar self = this;\n\t\t\tself.model.getCount(function (todos) {\n\t\t\t\tself.view.render('updateElementCount', todos.active);\n\t\t\t\tself.view.render('clearCompletedButton', {\n\t\t\t\t\tcompleted: todos.completed,\n\t\t\t\t\tvisible: todos.completed > 0\n\t\t\t\t});\n\t\t\t\t\n\t\t\t\tself.view.render('toggleAll', {checked: todos.completed === todos.total});\n\t\t\t\tself.view.render('contentBlockVisibility', {visible: todos.total > 0});\n\t\t\t});\n\t\t}\n\t\t\n\t\t/**\n\t\t* Re-filters the todo items, based on the active route.\n\t\t* @param {boolean|undefined} force  forces a re-painting of todo items.\n\t\t*/\n\t\t_filter(force) {\n\t\t\tvar activeRoute = this._activeRoute.charAt(0).toUpperCase() + this._activeRoute.substr(1);\n\t\t\t\n\t\t\t// Update the elements on the page, which change with each completed todo\n\t\t\tthis._updateCount();\n\t\t\t\n\t\t\t// If the last active route isn't \"All\", or we're switching routes, we\n\t\t\t// re-create the todo item elements, calling:\n\t\t\t//   this.show[All|Active|Completed]();\n\t\t\tif (force || this._lastActiveRoute !== 'All' || this._lastActiveRoute !== activeRoute) {\n\t\t\t\tthis['show' + activeRoute]();\n\t\t\t}\n\t\t\t\n\t\t\tthis._lastActiveRoute = activeRoute;\n\t\t}\n\t\t\n\t\t\n\t\t/**\n\t\t* Simply updates the filter nav's selected states\n\t\t*/\n\t\t_updateFilterState(currentPage) {\n\t\t\tthis._activeRoute = currentPage;\n\t\t\t\n\t\t\tif (currentPage === '') {\n\t\t\t\tthis._activeRoute = 'All';\n\t\t\t}\n\t\t\t\n\t\t\tthis._filter();\n\t\t\t\n\t\t\tthis.view.render('setFilter', currentPage);\n\t\t}\n\t}\n\t",
     "static": true,
     "longname": "C:/Users/Chloé/Desktop/P8/todo-list-app/js/controller.js",
     "access": "public",
@@ -667,9 +667,14 @@
     "export": true,
     "importPath": "./js/controller.js",
     "importStyle": "Controller",
-    "description": null,
-    "lineNumber": 1,
-    "undocument": true,
+    "description": "Takes a model and view and acts as the controller between them",
+    "lineNumber": 6,
+    "unknown": [
+      {
+        "tagName": "@constructor",
+        "tagValue": ""
+      }
+    ],
     "interface": false
   },
   {
@@ -682,14 +687,8 @@
     "static": false,
     "longname": "js/controller.js~Controller#constructor",
     "access": "public",
-    "description": "Takes a model and view and acts as the controller between them",
-    "lineNumber": 9,
-    "unknown": [
-      {
-        "tagName": "@constructor",
-        "tagValue": ""
-      }
-    ],
+    "description": "",
+    "lineNumber": 11,
     "params": [
       {
         "nullable": null,
@@ -724,7 +723,7 @@
     "longname": "js/controller.js~Controller#setView",
     "access": "public",
     "description": "Loads and initialises the view",
-    "lineNumber": 52,
+    "lineNumber": 54,
     "params": [
       {
         "nullable": null,
@@ -750,7 +749,7 @@
     "longname": "js/controller.js~Controller#showAll",
     "access": "public",
     "description": "An event to fire on load. Will get all items and display them in the\ntodo-list",
-    "lineNumber": 62,
+    "lineNumber": 64,
     "params": [],
     "return": null
   },
@@ -765,7 +764,7 @@
     "longname": "js/controller.js~Controller#showActive",
     "access": "public",
     "description": "Renders all active tasks",
-    "lineNumber": 72,
+    "lineNumber": 74,
     "params": [],
     "return": null
   },
@@ -780,7 +779,7 @@
     "longname": "js/controller.js~Controller#showCompleted",
     "access": "public",
     "description": "Renders all completed tasks",
-    "lineNumber": 82,
+    "lineNumber": 84,
     "params": [],
     "return": null
   },
@@ -795,7 +794,7 @@
     "longname": "js/controller.js~Controller#addItem",
     "access": "public",
     "description": "An event to fire whenever you want to add an item. Simply pass in the event\nobject and it'll handle the DOM insertion and saving of the new item.",
-    "lineNumber": 93,
+    "lineNumber": 95,
     "params": [
       {
         "name": "title",
@@ -817,7 +816,7 @@
     "longname": "js/controller.js~Controller#editItem",
     "access": "public",
     "description": null,
-    "lineNumber": 109,
+    "lineNumber": 111,
     "undocument": true,
     "params": [
       {
@@ -840,7 +839,7 @@
     "longname": "js/controller.js~Controller#editItemSave",
     "access": "public",
     "description": null,
-    "lineNumber": 116,
+    "lineNumber": 118,
     "undocument": true,
     "params": [
       {
@@ -869,7 +868,7 @@
     "longname": "js/controller.js~Controller#editItemCancel",
     "access": "public",
     "description": null,
-    "lineNumber": 142,
+    "lineNumber": 144,
     "undocument": true,
     "params": [
       {
@@ -892,7 +891,7 @@
     "longname": "js/controller.js~Controller#removeItem",
     "access": "public",
     "description": "By giving it an ID it'll find the DOM element matching that ID,\nremove it from the DOM and also remove it from storage.",
-    "lineNumber": 156,
+    "lineNumber": 158,
     "params": [
       {
         "nullable": null,
@@ -918,7 +917,7 @@
     "longname": "js/controller.js~Controller#removeCompletedItems",
     "access": "public",
     "description": "Will remove all completed items from the DOM and storage.",
-    "lineNumber": 180,
+    "lineNumber": 182,
     "params": [],
     "return": null
   },
@@ -933,7 +932,7 @@
     "longname": "js/controller.js~Controller#toggleComplete",
     "access": "public",
     "description": "Give it an ID of a model and a checkbox and it will update the item\nin storage based on the checkbox's state.",
-    "lineNumber": 200,
+    "lineNumber": 202,
     "params": [
       {
         "nullable": null,
@@ -980,7 +979,7 @@
     "longname": "js/controller.js~Controller#toggleAll",
     "access": "public",
     "description": "Will toggle ALL checkboxes' on/off state and completeness of models.\nJust pass in the event object.",
-    "lineNumber": 218,
+    "lineNumber": 220,
     "params": [
       {
         "name": "completed",
@@ -1002,7 +1001,7 @@
     "longname": "js/controller.js~Controller#_updateCount",
     "access": "private",
     "description": "Updates the pieces of the page which change depending on the remaining\nnumber of todos.",
-    "lineNumber": 233,
+    "lineNumber": 235,
     "params": [],
     "return": null
   },
@@ -1017,7 +1016,7 @@
     "longname": "js/controller.js~Controller#_filter",
     "access": "private",
     "description": "Re-filters the todo items, based on the active route.",
-    "lineNumber": 251,
+    "lineNumber": 253,
     "params": [
       {
         "nullable": null,
@@ -1042,7 +1041,7 @@
     "longname": "js/controller.js~Controller#_lastActiveRoute",
     "access": "private",
     "description": null,
-    "lineNumber": 264,
+    "lineNumber": 266,
     "undocument": true,
     "type": {
       "types": [
@@ -1061,7 +1060,7 @@
     "longname": "js/controller.js~Controller#_updateFilterState",
     "access": "private",
     "description": "Simply updates the filter nav's selected states",
-    "lineNumber": 271,
+    "lineNumber": 273,
     "params": [
       {
         "name": "currentPage",
@@ -1081,7 +1080,7 @@
     "longname": "js/controller.js~Controller#_activeRoute",
     "access": "private",
     "description": null,
-    "lineNumber": 272,
+    "lineNumber": 274,
     "undocument": true,
     "type": {
       "types": [
@@ -1335,7 +1334,7 @@
     "__docId__": 79,
     "kind": "file",
     "name": "js/model.js",
-    "content": "export default class Model {\n\n\t/**\n\t * Creates a new Model instance and hooks up the storage.\n\t *\n\t * @constructor\n\t * @param {object} storage A reference to the client side storage class\n\t */\n\tconstructor(storage) {\n\t\tthis.storage = storage;\n\t}\n\t\t\n\t/**\n\t * Creates a new todo model\n\t *\n\t * @param {string} [title] The title of the task\n\t * @param {function} [callback] The callback to fire after the model is created\n\t */\n\tcreate(title, callback) {\n\t\ttitle = title || '';\n\t\tcallback = callback || function () {};\n\t\t\n\t\tvar newItem = {\n\t\t\ttitle: title.trim(),\n\t\t\tcompleted: false\n\t\t};\n\t\t\n\t\tthis.storage.save(newItem, callback);\n\t}\n\t\n\t/**\n\t * Finds and returns a model in storage. If no query is given it'll simply\n\t * return everything. If you pass in a string or number it'll look that up as\n\t * the ID of the model to find. Lastly, you can pass it an object to match\n\t * against.\n\t *\n\t * @param {string|number|object} [query] A query to match models against\n\t * @param {function} [callback] The callback to fire after the model is found\n\t *\n\t * @example\n\t * model.read(1, func); // Will find the model with an ID of 1\n\t * model.read('1'); // Same as above\n\t * //Below will find a model with foo equalling bar and hello equalling world.\n\t * model.read({ foo: 'bar', hello: 'world' });\n\t */\n\tread(query, callback) {\n\t\tvar queryType = typeof query;\n\t\tcallback = callback || function () {};\n\t\t\n\t\tif (queryType === 'function') {\n\t\t\tcallback = query;\n\t\t\treturn this.storage.findAll(callback);\n\t\t} else if (queryType === 'string' || queryType === 'number') {\n\t\t\tquery = parseInt(query, 10);\n\t\t\tthis.storage.find({ id: query }, callback);\n\t\t} else {\n\t\t\tthis.storage.find(query, callback);\n\t\t}\t\n\t}\n\t\n\t/**\n\t * Updates a model by giving it an ID, data to update, and a callback to fire when\n\t * the update is complete.\n\t *\n\t * @param {number} id The id of the model to update\n\t * @param {object} data The properties to update and their new value\n\t * @param {function} callback The callback to fire when the update is complete.\n\t */\n\tupdate(id, data, callback) {\n\t\tthis.storage.save(data, callback, id);\n\t}\n\t\n\t/**\n\t * Removes a model from storage\n\t *\n\t * @param {number} id The ID of the model to remove\n\t * @param {function} callback The callback to fire when the removal is complete.\n\t */\n\tremove(id, callback) {\n\t\tthis.storage.remove(id, callback);\n\t}\n\t\n\t/**\n\t * Returns a count of all todos\n\t * @param {function} callback The callback to fire when the count is done.\n\t */\n\tgetCount(callback) {\n\t\tvar todos = {\n\t\t\tactive: 0,\n\t\t\tcompleted: 0,\n\t\t\ttotal: 0\n\t\t};\n\t\t\n\t\tthis.storage.findAll(function (data) {\n\t\t\tdata.forEach(function (todo) {\n\t\t\t\tif (todo.completed) {\n\t\t\t\t\ttodos.completed++;\n\t\t\t\t} else {\n\t\t\t\t\ttodos.active++;\n\t\t\t\t}\n\t\t\t\t\n\t\t\t\ttodos.total++;\n\t\t\t});\n\t\t\tcallback(todos);\n\t\t});\n\t}\n}\n\n\n",
+    "content": "/**\n* Creates a new Model instance and hooks up the storage.\n*\n* @constructor\n*/\n\nexport default class Model {\n\t\n\t/** \n\t* @param {object} storage A reference to the client side storage class\n\t*\n\t*/\n\tconstructor(storage) {\n\t\tthis.storage = storage;\n\t}\n\t\n\t/**\n\t* Creates a new todo model\n\t*\n\t* @param {string} [title] The title of the task\n\t* @param {function} [callback] The callback to fire after the model is created\n\t*/\n\tcreate(title, callback) {\n\t\ttitle = title || '';\n\t\tcallback = callback || function () {};\n\t\t\n\t\tvar newItem = {\n\t\t\ttitle: title.trim(),\n\t\t\tcompleted: false\n\t\t};\n\t\t\n\t\tthis.storage.save(newItem, callback);\n\t}\n\t\n\t/**\n\t* Finds and returns a model in storage. If no query is given it'll simply\n\t* return everything. If you pass in a string or number it'll look that up as\n\t* the ID of the model to find. Lastly, you can pass it an object to match\n\t* against.\n\t*\n\t* @param {string|number|object} [query] A query to match models against\n\t* @param {function} [callback] The callback to fire after the model is found\n\t*\n\t* @example\n\t* model.read(1, func); // Will find the model with an ID of 1\n\t* model.read('1'); // Same as above\n\t* //Below will find a model with foo equalling bar and hello equalling world.\n\t* model.read({ foo: 'bar', hello: 'world' });\n\t*/\n\tread(query, callback) {\n\t\tvar queryType = typeof query;\n\t\tcallback = callback || function () {};\n\t\t\n\t\tif (queryType === 'function') {\n\t\t\tcallback = query;\n\t\t\treturn this.storage.findAll(callback);\n\t\t} else if (queryType === 'string' || queryType === 'number') {\n\t\t\tquery = parseInt(query, 10);\n\t\t\tthis.storage.find({ id: query }, callback);\n\t\t} else {\n\t\t\tthis.storage.find(query, callback);\n\t\t}\t\n\t}\n\t\n\t/**\n\t* Updates a model by giving it an ID, data to update, and a callback to fire when\n\t* the update is complete.\n\t*\n\t* @param {number} id The id of the model to update\n\t* @param {object} data The properties to update and their new value\n\t* @param {function} callback The callback to fire when the update is complete.\n\t*/\n\tupdate(id, data, callback) {\n\t\tthis.storage.save(data, callback, id);\n\t}\n\t\n\t/**\n\t* Removes a model from storage\n\t*\n\t* @param {number} id The ID of the model to remove\n\t* @param {function} callback The callback to fire when the removal is complete.\n\t*/\n\tremove(id, callback) {\n\t\tthis.storage.remove(id, callback);\n\t}\n\t\n\t/**\n\t* Returns a count of all todos\n\t* @param {function} callback The callback to fire when the count is done.\n\t*/\n\tgetCount(callback) {\n\t\tvar todos = {\n\t\t\tactive: 0,\n\t\t\tcompleted: 0,\n\t\t\ttotal: 0\n\t\t};\n\t\t\n\t\tthis.storage.findAll(function (data) {\n\t\t\tdata.forEach(function (todo) {\n\t\t\t\tif (todo.completed) {\n\t\t\t\t\ttodos.completed++;\n\t\t\t\t} else {\n\t\t\t\t\ttodos.active++;\n\t\t\t\t}\n\t\t\t\t\n\t\t\t\ttodos.total++;\n\t\t\t});\n\t\t\tcallback(todos);\n\t\t});\n\t}\n}\n\n\n",
     "static": true,
     "longname": "C:/Users/Chloé/Desktop/P8/todo-list-app/js/model.js",
     "access": "public",
@@ -1353,9 +1352,14 @@
     "export": true,
     "importPath": "./js/model.js",
     "importStyle": "Model",
-    "description": null,
-    "lineNumber": 1,
-    "undocument": true,
+    "description": "Creates a new Model instance and hooks up the storage.",
+    "lineNumber": 7,
+    "unknown": [
+      {
+        "tagName": "@constructor",
+        "tagValue": ""
+      }
+    ],
     "interface": false
   },
   {
@@ -1368,14 +1372,8 @@
     "static": false,
     "longname": "js/model.js~Model#constructor",
     "access": "public",
-    "description": "Creates a new Model instance and hooks up the storage.",
-    "lineNumber": 9,
-    "unknown": [
-      {
-        "tagName": "@constructor",
-        "tagValue": ""
-      }
-    ],
+    "description": "",
+    "lineNumber": 13,
     "params": [
       {
         "nullable": null,
@@ -1398,7 +1396,7 @@
     "longname": "js/model.js~Model#storage",
     "access": "public",
     "description": null,
-    "lineNumber": 10,
+    "lineNumber": 14,
     "undocument": true,
     "type": {
       "types": [
@@ -1417,7 +1415,7 @@
     "longname": "js/model.js~Model#create",
     "access": "public",
     "description": "Creates a new todo model",
-    "lineNumber": 19,
+    "lineNumber": 23,
     "params": [
       {
         "nullable": null,
@@ -1456,7 +1454,7 @@
     "examples": [
       "model.read(1, func); // Will find the model with an ID of 1\nmodel.read('1'); // Same as above\n//Below will find a model with foo equalling bar and hello equalling world.\nmodel.read({ foo: 'bar', hello: 'world' });"
     ],
-    "lineNumber": 46,
+    "lineNumber": 50,
     "params": [
       {
         "nullable": null,
@@ -1498,7 +1496,7 @@
     "longname": "js/model.js~Model#update",
     "access": "public",
     "description": "Updates a model by giving it an ID, data to update, and a callback to fire when\nthe update is complete.",
-    "lineNumber": 69,
+    "lineNumber": 73,
     "params": [
       {
         "nullable": null,
@@ -1544,7 +1542,7 @@
     "longname": "js/model.js~Model#remove",
     "access": "public",
     "description": "Removes a model from storage",
-    "lineNumber": 79,
+    "lineNumber": 83,
     "params": [
       {
         "nullable": null,
@@ -1580,7 +1578,7 @@
     "longname": "js/model.js~Model#getCount",
     "access": "public",
     "description": "Returns a count of all todos",
-    "lineNumber": 87,
+    "lineNumber": 91,
     "params": [
       {
         "nullable": null,
@@ -1599,7 +1597,7 @@
     "__docId__": 88,
     "kind": "file",
     "name": "js/store.js",
-    "content": "export default class Store {\n\t/**\n\t* Creates a new client side storage object and will create an empty\n\t* collection if no collection already exists.\n\t*\n\t* @param {string} name The name of our DB we want to use\n\t* @param {function} callback Our fake DB uses callbacks because in\n\t* real life you probably would be making AJAX calls\n\t*/\n\tconstructor(name, callback) {\n\t\tcallback = callback || function () {};\n\t\t\n\t\tthis._dbName = name;\n\t\t\n\t\tif (!localStorage[name]) {\n\t\t\tvar data = {\n\t\t\t\ttodos: []\n\t\t\t};\n\t\t\t\n\t\t\tlocalStorage[name] = JSON.stringify(data);\n\t\t}\n\t\t\n\t\tcallback.call(this, JSON.parse(localStorage[name]));\n\t}\n\t\n\t/**\n\t * Finds items based on a query given as a JS object\n\t *\n\t * @param {object} query The query to match against (i.e. {foo: 'bar'})\n\t * @param {function} callback\t The callback to fire when the query has\n\t * completed running\n\t *\n\t * @example\n\t * db.find({foo: 'bar', hello: 'world'}, function (data) {\n\t *\t // data will return any items that have foo: bar and\n\t *\t // hello: world in their properties\n\t * });\n\t */\n\tfind(query, callback) {\n\t\tif (!callback) {\n\t\t\treturn;\n\t\t}\n\t\t\n\t\tvar todos = JSON.parse(localStorage[this._dbName]).todos;\n\t\t\n\t\tcallback.call(this, todos.filter(function (todo) {\n\t\t\tfor (var q in query) {\n\t\t\t\tif (query[q] !== todo[q]) {\n\t\t\t\t\treturn false;\n\t\t\t\t}\n\t\t\t}\n\t\t\treturn true;\n\t\t}));\n\t}\n\t\n\t/**\n\t* Will retrieve all data from the collection\n\t*\n\t* @param {function} callback The callback to fire upon retrieving data\n\t*/\n\tfindAll(callback) {\n\t\tcallback = callback || function () {};\n\t\tcallback.call(this, JSON.parse(localStorage[this._dbName]).todos);\n\t}\n\n\t/**\n\t * Will retrieve all data from the collection\n\t *\n\t * @param {function} callback The callback to fire upon retrieving data\n\t */\n\tfindAll(callback) {\n\t\tcallback = callback || function () {};\n\t\tcallback.call(this, JSON.parse(localStorage[this._dbName]).todos);\n\t}\n\n\t/**\n\t * Will save the given data to the DB. If no item exists it will create a new\n\t * item, otherwise it'll simply update an existing item's properties\n\t *\n\t * @param {object} updateData The data to save back into the DB\n\t * @param {function} callback The callback to fire after saving\n\t * @param {number} id An optional param to enter an ID of an item to update\n\t */\t\n\tsave(updateData, callback, id) {\n\t\tvar data = JSON.parse(localStorage[this._dbName]);\n\t\tvar todos = data.todos;\n\t\t\n\t\tcallback = callback || function () {};\n\t\t\n\t\tvar newId = 0;\n\t\tif (todos.length > 0) {\n\t\t\tnewId = todos[todos.length - 1].id + 1;\n\t\t}\n\t\t\n\t\t// If an ID was actually given, find the item and update each property\n\t\tif (id) {\n\t\t\tfor (var i = 0; i < todos.length; i++) {\n\t\t\t\tif (todos[i].id === id) {\n\t\t\t\t\tfor (var key in updateData) {\n\t\t\t\t\t\ttodos[i][key] = updateData[key];\n\t\t\t\t\t}\n\t\t\t\t\tbreak;\n\t\t\t\t}\n\t\t\t}\n\t\t\t\n\t\t\tlocalStorage[this._dbName] = JSON.stringify(data);\n\t\t\tcallback.call(this, todos);\n\t\t} else {\n\t\t\t\n\t\t\t// Assign an ID\n\t\t\tupdateData.id = newId;\n\t\t\t\n\t\t\t\n\t\t\ttodos.push(updateData);\n\t\t\tlocalStorage[this._dbName] = JSON.stringify(data);\n\t\t\tcallback.call(this, [updateData]);\n\t\t}\n\t}\n\n\t/**\n\t * Will remove an item from the Store based on its ID\n\t *\n\t * @param {number} id The ID of the item you want to remove\n\t * @param {function} callback The callback to fire after saving\n\t */\t\n\tremove(id, callback) {\n\t\tvar data = JSON.parse(localStorage[this._dbName]);\n\t\tvar todos = data.todos;\n\t\tvar todoId;\n\t\t\n\t\tfor (var i = 0; i < todos.length; i++) {\n\t\t\tif (todos[i].id == id) {\n\t\t\t\ttodoId = todos[i].id;\n\t\t\t}\n\t\t}\n\t\t\n\t\tfor (var i = 0; i < todos.length; i++) {\n\t\t\tif (todos[i].id == todoId) {\n\t\t\t\ttodos.splice(i, 1);\n\t\t\t}\n\t\t}\n\t\t\n\t\tlocalStorage[this._dbName] = JSON.stringify(data);\n\t\tcallback.call(this, todos);\n\t}\n\n\t/**\n\t * Will drop all storage and start fresh\n\t *\n\t * @param {function} callback The callback to fire after dropping the data\n\t */\t\n\tdrop(callback) {\n\t\tvar data = {todos: []};\n\t\tlocalStorage[this._dbName] = JSON.stringify(data);\n\t\tcallback.call(this, data.todos);\n\t}\n}",
+    "content": "/**\n* Creates a new client side storage object and will create an empty\n* collection if no collection already exists.\n*\n* \n*/\nexport default class Store {\n\t/**\n\t* @param {string} name The name of our DB we want to use\n\t* @param {function} callback Our fake DB uses callbacks because in\n\t* real life you probably would be making AJAX calls\n\t*/\n\tconstructor(name, callback) {\n\t\tcallback = callback || function () {};\n\t\t\n\t\tthis._dbName = name;\n\t\t\n\t\tif (!localStorage[name]) {\n\t\t\tvar data = {\n\t\t\t\ttodos: []\n\t\t\t};\n\t\t\t\n\t\t\tlocalStorage[name] = JSON.stringify(data);\n\t\t}\n\t\t\n\t\tcallback.call(this, JSON.parse(localStorage[name]));\n\t}\n\t\n\t/**\n\t* Finds items based on a query given as a JS object\n\t*\n\t* @param {object} query The query to match against (i.e. {foo: 'bar'})\n\t* @param {function} callback\t The callback to fire when the query has\n\t* completed running\n\t*\n\t* @example\n\t* db.find({foo: 'bar', hello: 'world'}, function (data) {\n\t\t*\t // data will return any items that have foo: bar and\n\t\t*\t // hello: world in their properties\n\t\t* });\n\t\t*/\n\t\tfind(query, callback) {\n\t\t\tif (!callback) {\n\t\t\t\treturn;\n\t\t\t}\n\t\t\t\n\t\t\tvar todos = JSON.parse(localStorage[this._dbName]).todos;\n\t\t\t\n\t\t\tcallback.call(this, todos.filter(function (todo) {\n\t\t\t\tfor (var q in query) {\n\t\t\t\t\tif (query[q] !== todo[q]) {\n\t\t\t\t\t\treturn false;\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\treturn true;\n\t\t\t}));\n\t\t}\n\t\t\n\t\t/**\n\t\t* Will retrieve all data from the collection\n\t\t*\n\t\t* @param {function} callback The callback to fire upon retrieving data\n\t\t*/\n\t\tfindAll(callback) {\n\t\t\tcallback = callback || function () {};\n\t\t\tcallback.call(this, JSON.parse(localStorage[this._dbName]).todos);\n\t\t}\n\t\t\n\t\t/**\n\t\t* Will retrieve all data from the collection\n\t\t*\n\t\t* @param {function} callback The callback to fire upon retrieving data\n\t\t*/\n\t\tfindAll(callback) {\n\t\t\tcallback = callback || function () {};\n\t\t\tcallback.call(this, JSON.parse(localStorage[this._dbName]).todos);\n\t\t}\n\t\t\n\t\t/**\n\t\t* Will save the given data to the DB. If no item exists it will create a new\n\t\t* item, otherwise it'll simply update an existing item's properties\n\t\t*\n\t\t* @param {object} updateData The data to save back into the DB\n\t\t* @param {function} callback The callback to fire after saving\n\t\t* @param {number} id An optional param to enter an ID of an item to update\n\t\t*/\t\n\t\tsave(updateData, callback, id) {\n\t\t\tvar data = JSON.parse(localStorage[this._dbName]);\n\t\t\tvar todos = data.todos;\n\t\t\t\n\t\t\tcallback = callback || function () {};\n\t\t\t\n\t\t\tvar newId = 0;\n\t\t\tif (todos.length > 0) {\n\t\t\t\tnewId = todos[todos.length - 1].id + 1;\n\t\t\t}\n\t\t\t\n\t\t\t// If an ID was actually given, find the item and update each property\n\t\t\tif (id) {\n\t\t\t\tfor (var i = 0; i < todos.length; i++) {\n\t\t\t\t\tif (todos[i].id === id) {\n\t\t\t\t\t\tfor (var key in updateData) {\n\t\t\t\t\t\t\ttodos[i][key] = updateData[key];\n\t\t\t\t\t\t}\n\t\t\t\t\t\tbreak;\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\t\n\t\t\t\tlocalStorage[this._dbName] = JSON.stringify(data);\n\t\t\t\tcallback.call(this, todos);\n\t\t\t} else {\n\t\t\t\t\n\t\t\t\t// Assign an ID\n\t\t\t\tupdateData.id = newId;\n\t\t\t\t\n\t\t\t\t\n\t\t\t\ttodos.push(updateData);\n\t\t\t\tlocalStorage[this._dbName] = JSON.stringify(data);\n\t\t\t\tcallback.call(this, [updateData]);\n\t\t\t}\n\t\t}\n\t\t\n\t\t/**\n\t\t* Will remove an item from the Store based on its ID\n\t\t*\n\t\t* @param {number} id The ID of the item you want to remove\n\t\t* @param {function} callback The callback to fire after saving\n\t\t*/\t\n\t\tremove(id, callback) {\n\t\t\tvar data = JSON.parse(localStorage[this._dbName]);\n\t\t\tvar todos = data.todos;\n\t\t\tvar todoId;\n\t\t\t\n\t\t\tfor (var i = 0; i < todos.length; i++) {\n\t\t\t\tif (todos[i].id == id) {\n\t\t\t\t\ttodoId = todos[i].id;\n\t\t\t\t}\n\t\t\t}\n\t\t\t\n\t\t\tfor (var i = 0; i < todos.length; i++) {\n\t\t\t\tif (todos[i].id == todoId) {\n\t\t\t\t\ttodos.splice(i, 1);\n\t\t\t\t}\n\t\t\t}\n\t\t\t\n\t\t\tlocalStorage[this._dbName] = JSON.stringify(data);\n\t\t\tcallback.call(this, todos);\n\t\t}\n\t\t\n\t\t/**\n\t\t* Will drop all storage and start fresh\n\t\t*\n\t\t* @param {function} callback The callback to fire after dropping the data\n\t\t*/\t\n\t\tdrop(callback) {\n\t\t\tvar data = {todos: []};\n\t\t\tlocalStorage[this._dbName] = JSON.stringify(data);\n\t\t\tcallback.call(this, data.todos);\n\t\t}\n\t}",
     "static": true,
     "longname": "C:/Users/Chloé/Desktop/P8/todo-list-app/js/store.js",
     "access": "public",
@@ -1617,9 +1615,8 @@
     "export": true,
     "importPath": "./js/store.js",
     "importStyle": "Store",
-    "description": null,
-    "lineNumber": 1,
-    "undocument": true,
+    "description": "Creates a new client side storage object and will create an empty\ncollection if no collection already exists.",
+    "lineNumber": 7,
     "interface": false
   },
   {
@@ -1632,8 +1629,8 @@
     "static": false,
     "longname": "js/store.js~Store#constructor",
     "access": "public",
-    "description": "Creates a new client side storage object and will create an empty\ncollection if no collection already exists.",
-    "lineNumber": 10,
+    "description": "",
+    "lineNumber": 13,
     "params": [
       {
         "nullable": null,
@@ -1666,7 +1663,7 @@
     "longname": "js/store.js~Store#_dbName",
     "access": "private",
     "description": null,
-    "lineNumber": 13,
+    "lineNumber": 16,
     "undocument": true,
     "type": {
       "types": [
@@ -1688,7 +1685,7 @@
     "examples": [
       "db.find({foo: 'bar', hello: 'world'}, function (data) {\n // data will return any items that have foo: bar and\n // hello: world in their properties\n});"
     ],
-    "lineNumber": 39,
+    "lineNumber": 42,
     "params": [
       {
         "nullable": null,
@@ -1724,7 +1721,7 @@
     "longname": "js/store.js~Store#findAll",
     "access": "public",
     "description": "Will retrieve all data from the collection",
-    "lineNumber": 61,
+    "lineNumber": 64,
     "params": [
       {
         "nullable": null,
@@ -1750,7 +1747,7 @@
     "longname": "js/store.js~Store#findAll",
     "access": "public",
     "description": "Will retrieve all data from the collection",
-    "lineNumber": 71,
+    "lineNumber": 74,
     "params": [
       {
         "nullable": null,
@@ -1776,7 +1773,7 @@
     "longname": "js/store.js~Store#save",
     "access": "public",
     "description": "Will save the given data to the DB. If no item exists it will create a new\nitem, otherwise it'll simply update an existing item's properties",
-    "lineNumber": 84,
+    "lineNumber": 87,
     "params": [
       {
         "nullable": null,
@@ -1822,7 +1819,7 @@
     "longname": "js/store.js~Store#remove",
     "access": "public",
     "description": "Will remove an item from the Store based on its ID",
-    "lineNumber": 126,
+    "lineNumber": 129,
     "params": [
       {
         "nullable": null,
@@ -1858,7 +1855,7 @@
     "longname": "js/store.js~Store#drop",
     "access": "public",
     "description": "Will drop all storage and start fresh",
-    "lineNumber": 152,
+    "lineNumber": 155,
     "params": [
       {
         "nullable": null,
@@ -1877,7 +1874,7 @@
     "__docId__": 98,
     "kind": "file",
     "name": "js/template.js",
-    "content": "var htmlEscapes = {\n\t'&': '&amp;',\n\t'<': '&lt;',\n\t'>': '&gt;',\n\t'\"': '&quot;',\n\t'\\'': '&#x27;',\n\t'`': '&#x60;'\n};\n\nvar escapeHtmlChar = function (chr) {\n\treturn htmlEscapes[chr];\n};\n\nvar reUnescapedHtml = /[&<>\"'`]/g;\nvar reHasUnescapedHtml = new RegExp(reUnescapedHtml.source);\n\nvar escape = function (string) {\n\treturn (string && reHasUnescapedHtml.test(string))\n\t? string.replace(reUnescapedHtml, escapeHtmlChar)\n\t: string;\n};\n\n\n\nexport default class Template {\n\t/**\n\t* Sets up defaults for all the Template methods such as a default template\n\t*\n\t* @constructor\n\t*/\n\tconstructor() {\n\t\tthis.defaultTemplate\n\t\t=\t'<li data-id=\"{{id}}\" class=\"{{completed}}\">'\n\t\t+\t\t'<div class=\"view\">'\n\t\t+\t\t\t'<input class=\"toggle\" type=\"checkbox\" {{checked}}>'\n\t\t+\t\t\t'<label>{{title}}</label>'\n\t\t+\t\t\t'<button class=\"destroy\"></button>'\n\t\t+\t\t'</div>'\n\t\t+\t'</li>';\n\t}\n\t\n\t/**\n\t * Creates an <li> HTML string and returns it for placement in your app.\n\t *\n\t * NOTE: In real life you should be using a templating engine such as Mustache\n\t * or Handlebars, however, this is a vanilla JS example.\n\t *\n\t * @param {object} data The object containing keys you want to find in the\n\t *                      template to replace.\n\t * @returns {string} HTML String of an <li> element\n\t *\n\t * @example\n\t * view.show({\n\t *\tid: 1,\n\t *\ttitle: \"Hello World\",\n\t *\tcompleted: 0,\n\t * });\n\t */\n\tshow(data) {\n\t\tvar i, l;\n\t\tvar view = '';\n\t\t\n\t\tfor (i = 0, l = data.length; i < l; i++) {\n\t\t\tvar template = this.defaultTemplate;\n\t\t\tvar completed = '';\n\t\t\tvar checked = '';\n\t\t\t\n\t\t\tif (data[i].completed) {\n\t\t\t\tcompleted = 'completed';\n\t\t\t\tchecked = 'checked';\n\t\t\t}\n\t\t\t\n\t\t\ttemplate = template.replace('{{id}}', data[i].id);\n\t\t\ttemplate = template.replace('{{title}}', escape(data[i].title));\n\t\t\ttemplate = template.replace('{{completed}}', completed);\n\t\t\ttemplate = template.replace('{{checked}}', checked);\n\t\t\t\n\t\t\tview = view + template;\n\t\t}\n\t\t\n\t\treturn view;\n\t}\n\t\n\t/**\n\t * Displays a counter of how many to dos are left to complete\n\t *\n\t * @param {number} activeTodos The number of active todos.\n\t * @returns {string} String containing the count\n\t */\n\titemCounter(activeTodos) {\n\t\tvar plural = activeTodos === 1 ? '' : 's';\n\t\treturn '<strong>' + activeTodos + '</strong> item' + plural + ' left';\n\t}\n\t\n\t/**\n\t * Updates the text within the \"Clear completed\" button\n\t *\n\t * @param  {[object]} completedTodos The number of completed todos.\n\t * @returns {string} String containing the count\n\t */\n\tclearCompletedButton(completedTodos) {\n\t\tif (completedTodos > 0) {\n\t\t\treturn 'Clear completed';\n\t\t} else {\n\t\t\treturn '';\n\t\t}\n\t}\n}\n",
+    "content": "var htmlEscapes = {\n\t'&': '&amp;',\n\t'<': '&lt;',\n\t'>': '&gt;',\n\t'\"': '&quot;',\n\t'\\'': '&#x27;',\n\t'`': '&#x60;'\n};\n\nvar escapeHtmlChar = function (chr) {\n\treturn htmlEscapes[chr];\n};\n\nvar reUnescapedHtml = /[&<>\"'`]/g;\nvar reHasUnescapedHtml = new RegExp(reUnescapedHtml.source);\n\nvar escape = function (string) {\n\treturn (string && reHasUnescapedHtml.test(string))\n\t? string.replace(reUnescapedHtml, escapeHtmlChar)\n\t: string;\n};\n\n\n/**\n* Sets up defaults for all the Template methods such as a default template\n*\n* @constructor\n*/\nexport default class Template {\n\t/**\n\t* creates a new template\n\t* \n\t* @param {object} Template\n\t*/\n\tconstructor() {\n\t\tthis.defaultTemplate\n\t\t=\t'<li data-id=\"{{id}}\" class=\"{{completed}}\">'\n\t\t+\t\t'<div class=\"view\">'\n\t\t+\t\t\t'<input class=\"toggle\" type=\"checkbox\" {{checked}}>'\n\t\t+\t\t\t'<label>{{title}}</label>'\n\t\t+\t\t\t'<button class=\"destroy\"></button>'\n\t\t+\t\t'</div>'\n\t\t+\t'</li>';\n\t}\n\t\n\t/**\n\t* Creates an <li> HTML string and returns it for placement in your app.\n\t*\n\t* NOTE: In real life you should be using a templating engine such as Mustache\n\t* or Handlebars, however, this is a vanilla JS example.\n\t*\n\t* @param {object} data The object containing keys you want to find in the\n\t*                      template to replace.\n\t* @returns {string} HTML String of an <li> element\n\t*\n\t* @example\n\t* view.show({\n\t\t*\tid: 1,\n\t\t*\ttitle: \"Hello World\",\n\t\t*\tcompleted: 0,\n\t\t* });\n\t\t*/\n\t\tshow(data) {\n\t\t\tvar i, l;\n\t\t\tvar view = '';\n\t\t\t\n\t\t\tfor (i = 0, l = data.length; i < l; i++) {\n\t\t\t\tvar template = this.defaultTemplate;\n\t\t\t\tvar completed = '';\n\t\t\t\tvar checked = '';\n\t\t\t\t\n\t\t\t\tif (data[i].completed) {\n\t\t\t\t\tcompleted = 'completed';\n\t\t\t\t\tchecked = 'checked';\n\t\t\t\t}\n\t\t\t\t\n\t\t\t\ttemplate = template.replace('{{id}}', data[i].id);\n\t\t\t\ttemplate = template.replace('{{title}}', escape(data[i].title));\n\t\t\t\ttemplate = template.replace('{{completed}}', completed);\n\t\t\t\ttemplate = template.replace('{{checked}}', checked);\n\t\t\t\t\n\t\t\t\tview = view + template;\n\t\t\t}\n\t\t\t\n\t\t\treturn view;\n\t\t}\n\t\t\n\t\t/**\n\t\t* Displays a counter of how many to dos are left to complete\n\t\t*\n\t\t* @param {number} activeTodos The number of active todos.\n\t\t* @returns {string} String containing the count\n\t\t*/\n\t\titemCounter(activeTodos) {\n\t\t\tvar plural = activeTodos === 1 ? '' : 's';\n\t\t\treturn '<strong>' + activeTodos + '</strong> item' + plural + ' left';\n\t\t}\n\t\t\n\t\t/**\n\t\t* Updates the text within the \"Clear completed\" button\n\t\t*\n\t\t* @param  {[object]} completedTodos The number of completed todos.\n\t\t* @returns {string} String containing the count\n\t\t*/\n\t\tclearCompletedButton(completedTodos) {\n\t\t\tif (completedTodos > 0) {\n\t\t\t\treturn 'Clear completed';\n\t\t\t} else {\n\t\t\t\treturn '';\n\t\t\t}\n\t\t}\n\t}\n\t",
     "static": true,
     "longname": "C:/Users/Chloé/Desktop/P8/todo-list-app/js/template.js",
     "access": "public",
@@ -2020,9 +2017,14 @@
     "export": true,
     "importPath": "./js/template.js",
     "importStyle": "Template",
-    "description": null,
-    "lineNumber": 25,
-    "undocument": true,
+    "description": "Sets up defaults for all the Template methods such as a default template",
+    "lineNumber": 29,
+    "unknown": [
+      {
+        "tagName": "@constructor",
+        "tagValue": ""
+      }
+    ],
     "interface": false
   },
   {
@@ -2035,12 +2037,18 @@
     "static": false,
     "longname": "js/template.js~Template#constructor",
     "access": "public",
-    "description": "Sets up defaults for all the Template methods such as a default template",
-    "lineNumber": 31,
-    "unknown": [
+    "description": "creates a new template",
+    "lineNumber": 35,
+    "params": [
       {
-        "tagName": "@constructor",
-        "tagValue": ""
+        "nullable": null,
+        "types": [
+          "object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "Template",
+        "description": ""
       }
     ]
   },
@@ -2053,7 +2061,7 @@
     "longname": "js/template.js~Template#defaultTemplate",
     "access": "public",
     "description": null,
-    "lineNumber": 32,
+    "lineNumber": 36,
     "undocument": true,
     "type": {
       "types": [
@@ -2075,7 +2083,7 @@
     "examples": [
       "view.show({\nid: 1,\ntitle: \"Hello World\",\ncompleted: 0,\n});"
     ],
-    "lineNumber": 59,
+    "lineNumber": 63,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2114,7 +2122,7 @@
     "longname": "js/template.js~Template#itemCounter",
     "access": "public",
     "description": "Displays a counter of how many to dos are left to complete",
-    "lineNumber": 90,
+    "lineNumber": 94,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2153,7 +2161,7 @@
     "longname": "js/template.js~Template#clearCompletedButton",
     "access": "public",
     "description": "Updates the text within the \"Clear completed\" button",
-    "lineNumber": 101,
+    "lineNumber": 105,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2783,7 +2791,7 @@
   },
   {
     "kind": "index",
-    "content": "# TODO list app\r\n\r\nehncjjdskchzjnndknc\r\n\r\n**coucou**\r\n\r\n```javascript\r\nvar coucou = 'coucou';\r\n```",
+    "content": "# TODO list app\r\n\r\nBienvenue sur le Read Me de notre application \"TODO list app\" !\r\n\r\nNotre application sert essentiellement au maintien d'une todo list propre et ordonnée.\r\n\r\n****\r\n\r\n## Présentation rapide :\r\n\r\n****\r\n\r\nLorsque vous arrivez sur notre application, vous vous trouvez face à une liste vide. Nous vous proposons alors d'entrer une première tâche dans la barre de texte \"What needs to be done ?\".\r\n\r\n![listevide](./manual/asset/accueil.jpg)\r\n\r\nUne fois une première tâche ajoutée, vous voilà face à une interface bien plus complète.\r\n\r\n![premieretache](./manual/asset/ajoutpremièretâche.jpg)\r\n\r\nVous avez dès lors plusieurs possibilités afin de gérer votre liste.\r\n\r\n****\r\n\r\n## Fonctionnalités :\r\n\r\n****\r\n\r\n1. ### Ajout de todos :\r\n\r\n>Le système d'ajout reste le même que lors de l'ajout de votre première tâche. Dans le cadre de cette démonstration, nous allons en ajouter cinq afin de vous montrer la forme que prendra la liste une fois ceci fait.\r\n>\r\n>![ajouttaches](./manual/asset/ajoutdetâches.jpg)\r\n>\r\n>Vous voilà avec cinq tâches dans votre liste, tâches qui se suivent dans l'ordre d'ajout.\r\n\r\n2. ### Edition d'une todo : \r\n\r\n>Imaginons que vous vous soyez trompés dans le nom d'une de vos tâches. Sans doute voudrez-vous la corriger ? Pour cela, rien de plus simple : double-cliquez sur le nom de cette dernière.\r\n>\r\n>![editiontache](./manual/asset/editionnomtâche.jpg)\r\n>\r\n>Modifiez ensuite le nom de la tâche comme bon vous semble et appuyez en dehors de la todo ou sur \"entrée\" afin de valider votre choix. C'est bon ! Votre todo est désormais renommée !\r\n>\r\n>![editiontacheterminee](./manual/asset/modificationnomtâche.jpg)\r\n\r\n3. ### Compléter une todo :\r\n\r\n>Voilà, vous avez créé votre tâche à faire, et bien heureusement pour vous, vous arrivez au bout de la première.\r\n>\r\n>Il est temps de la compléter et de la faire disparaître de cette longue liste... Pour cela, c'est très simple. Regardez donc à gauche de votre todo. Un cercle vide cliquable s'y trouve. Afin de signifier à l'application que votre tâche est terminée, vous n'avez qu'à cocher cette case !\r\n>\r\n>![premierecompleted](./manual/asset/premièretâchecomplétée.jpg)\r\n\r\n4. ### Filtres pour gérer vos todos :\r\n\r\n>Voilà, vous avez dix todos, donc quatre sont terminées. Le problème, c'est que vous ne vous y retrouvez plus bien. Certaines sont barrées, d'autres non... Comment trier celles qui sont encore actives de celle qui sont complétées ?\r\n>\r\n>![liste10todos](./manual/asset/liste10todos.jpg)\r\n>\r\n>C'est très simple. Jetons un oeil à l'interface, notamment aux trois boutons situés sous la liste des todos. Pour le moment, le filtre actif est *all*, mais il y en a deux autres : *active* et *completed*.\r\n>\r\n>Admettons que vous vouliez avoir accès à vos tâches encore en cours, c'est à dire celles qui sont encore actives... Il vous suffit de cliquer sur *active* et de laisser l'application se charger du tri !\r\n>\r\n>![testactive](./manual/asset/testactivetodos.jpg)\r\n>\r\n>De la même façon, cliquez sur *completed* pour accéder à la liste de celles qui ont déjà été complétées.\r\n\r\n5. ### Suppression des todos complétées accumulées\r\n\r\n>Vous avez terminé quatre tâches. Félicitations ! Mais maintenant, ces dernières vous dérangent, et de toute façon, vous n'en avez plus besoin... Que faire d'elles ? Eh bien vous pouvez tout simplement les supprimer. C'est ce à quoi sert le bouton en bas à droite appelé *clear completed*.\r\n>\r\n>![clearbutton](./manual/asset/testcompletedtodos.jpg)\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
     "longname": "C:\\Users\\Chloé\\Desktop\\P8\\todo-list-app\\README.md",
     "name": "./README.md",
     "static": true,
@@ -2791,9 +2799,32 @@
   },
   {
     "kind": "packageJSON",
-    "content": "{\n  \"private\": true,\n  \"dependencies\": {\n    \"esdoc\": \"^1.1.0\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"jasmine\": \"^3.5.0\",\n    \"todomvc-app-css\": \"^2.0.1\",\n    \"todomvc-common\": \"^1.0.1\"\n  },\n  \"devDependencies\": {\n    \"jasmine-core\": \"^2.0.0\"\n  },\n  \"scripts\": {\n    \"docs\": \"./node_modules/.bin/esdoc\"\n  }  \n}\n",
+    "content": "{\n  \"private\": true,\n  \"dependencies\": {\n    \"esdoc\": \"^1.1.0\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"jasmine\": \"^3.5.0\",\n    \"todomvc-app-css\": \"^2.0.1\",\n    \"todomvc-common\": \"^1.0.1\"\n  },\n  \"devDependencies\": {\n    \"jasmine-core\": \"^2.0.0\"\n  },\n  \"scripts\": {\n    \"docs\": \"./node_modules/.bin/esdoc & http-server -o /docs\",\n    \"start\": \"http-server -o /\",\n    \"test\": \"http-server -o /test/SpecRunner.html\"\n  }  \n}\n",
     "longname": "C:\\Users\\Chloé\\Desktop\\P8\\todo-list-app\\package.json",
     "name": "package.json",
+    "static": true,
+    "access": "public"
+  },
+  {
+    "kind": "manualIndex",
+    "content": "# audit du site concurrent\r\n\r\nblablabla",
+    "longname": "C:\\Users\\Chloé\\Desktop\\P8\\todo-list-app\\manual\\audit.md",
+    "name": "./manual/audit.md",
+    "static": true,
+    "access": "public"
+  },
+  {
+    "kind": "manualAsset",
+    "longname": "C:\\Users\\Chloé\\Desktop\\P8\\todo-list-app\\manual\\asset",
+    "name": "./manual/asset",
+    "static": true,
+    "access": "public"
+  },
+  {
+    "kind": "manual",
+    "longname": "C:\\Users\\Chloé\\Desktop\\P8\\todo-list-app\\manual\\audit.md",
+    "name": "./manual/audit.md",
+    "content": "# audit du site concurrent\r\n\r\nblablabla",
     "static": true,
     "access": "public"
   }

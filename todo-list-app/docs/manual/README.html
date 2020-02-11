@@ -2,18 +2,18 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <base data-ice="baseUrl">
-  <title data-ice="title">Home</title>
+  <base data-ice="baseUrl" href="../">
+  <title data-ice="title">Manual</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
   <script src="script/manual.js"></script>
 </head>
-<body class="layout-container" data-ice="rootContainer">
+<body class="layout-container manual-root" data-ice="rootContainer">
 
 <header>
   <a href="./">Home</a>
-  <a href="./manual/index.html" data-ice="manualHeaderLink">Manual</a>
+  
   <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
   
@@ -26,31 +26,32 @@
   </div>
 </header>
 
-<nav class="navigation" data-ice="nav"><div>
-  <ul>
-    
-  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/controller.js~Controller.html">Controller</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/model.js~Model.html">Model</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/store.js~Store.html">Store</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/template.js~Template.html">Template</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/view.js~View.html">View</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-$delegate">$delegate</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-$on">$on</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-$parent">$parent</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-qs">qs</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-qsa">qsa</a></span></span></li>
+<nav class="navigation" data-ice="nav"><div class="manual-toc-root">
+  
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/README.html"><a href="manual/README.html" data-ice="link">TODO list app</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/README.html"><a href="manual/README.html#pr&#xE9;sentation-rapide--" data-ice="link">Pr&#xE9;sentation rapide :</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/README.html"><a href="manual/README.html#fonctionnalit&#xE9;s--" data-ice="link">Fonctionnalit&#xE9;s :</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/README.html"><a href="manual/README.html#ajout-de-todos--" data-ice="link">Ajout de todos :</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/README.html"><a href="manual/README.html#edition-d--39-une-todo--" data-ice="link">Edition d&apos;une todo :</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/README.html"><a href="manual/README.html#compl&#xE9;ter-une-todo--" data-ice="link">Compl&#xE9;ter une todo :</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/README.html"><a href="manual/README.html#filtres-pour-g&#xE9;rer-vos-todos--" data-ice="link">Filtres pour g&#xE9;rer vos todos :</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/README.html"><a href="manual/README.html#suppression-des-todos-compl&#xE9;t&#xE9;es-accumul&#xE9;es" data-ice="link">Suppression des todos compl&#xE9;t&#xE9;es accumul&#xE9;es</a></li>
 </ul>
+  </div>
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="todo-list-app">TODO list app</h1><p>Bienvenue sur le Read Me de notre application &quot;TODO list app&quot; !</p>
+<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="todo-list-app">TODO list app</h1><p>Bienvenue sur le Read Me de notre application &quot;TODO list app&quot; !</p>
 <p>Notre application sert essentiellement au maintien d&apos;une todo list propre et ordonn&#xE9;e.</p>
 <hr>
 <h2 id="pr&#xE9;sentation-rapide--">Pr&#xE9;sentation rapide :</h2><hr>
 <p>Lorsque vous arrivez sur notre application, vous vous trouvez face &#xE0; une liste vide. Nous vous proposons alors d&apos;entrer une premi&#xE8;re t&#xE2;che dans la barre de texte &quot;What needs to be done ?&quot;.</p>
-<p><img src="./manual/asset/accueil.jpg" alt="listevide"></p>
+<p><img src="./manual/./manual/asset/accueil.jpg" alt="listevide"></p>
 <p>Une fois une premi&#xE8;re t&#xE2;che ajout&#xE9;e, vous voil&#xE0; face &#xE0; une interface bien plus compl&#xE8;te.</p>
-<p><img src="./manual/asset/ajoutpremi&#xE8;ret&#xE2;che.jpg" alt="premieretache"></p>
+<p><img src="./manual/./manual/asset/ajoutpremi&#xE8;ret&#xE2;che.jpg" alt="premieretache"></p>
 <p>Vous avez d&#xE8;s lors plusieurs possibilit&#xE9;s afin de g&#xE9;rer votre liste.</p>
 <hr>
 <h2 id="fonctionnalit&#xE9;s--">Fonctionnalit&#xE9;s :</h2><hr>
@@ -59,7 +60,7 @@
 </ol>
 <blockquote>
 <p>Le syst&#xE8;me d&apos;ajout reste le m&#xEA;me que lors de l&apos;ajout de votre premi&#xE8;re t&#xE2;che. Dans le cadre de cette d&#xE9;monstration, nous allons en ajouter cinq afin de vous montrer la forme que prendra la liste une fois ceci fait.</p>
-<p><img src="./manual/asset/ajoutdet&#xE2;ches.jpg" alt="ajouttaches"></p>
+<p><img src="./manual/./manual/asset/ajoutdet&#xE2;ches.jpg" alt="ajouttaches"></p>
 <p>Vous voil&#xE0; avec cinq t&#xE2;ches dans votre liste, t&#xE2;ches qui se suivent dans l&apos;ordre d&apos;ajout.</p>
 </blockquote>
 <ol start="2">
@@ -67,9 +68,9 @@
 </ol>
 <blockquote>
 <p>Imaginons que vous vous soyez tromp&#xE9;s dans le nom d&apos;une de vos t&#xE2;ches. Sans doute voudrez-vous la corriger ? Pour cela, rien de plus simple : double-cliquez sur le nom de cette derni&#xE8;re.</p>
-<p><img src="./manual/asset/editionnomt&#xE2;che.jpg" alt="editiontache"></p>
+<p><img src="./manual/./manual/asset/editionnomt&#xE2;che.jpg" alt="editiontache"></p>
 <p>Modifiez ensuite le nom de la t&#xE2;che comme bon vous semble et appuyez en dehors de la todo ou sur &quot;entr&#xE9;e&quot; afin de valider votre choix. C&apos;est bon ! Votre todo est d&#xE9;sormais renomm&#xE9;e !</p>
-<p><img src="./manual/asset/modificationnomt&#xE2;che.jpg" alt="editiontacheterminee"></p>
+<p><img src="./manual/./manual/asset/modificationnomt&#xE2;che.jpg" alt="editiontacheterminee"></p>
 </blockquote>
 <ol start="3">
 <li><h3 id="compl&#xE9;ter-une-todo--">Compl&#xE9;ter une todo :</h3></li>
@@ -77,17 +78,17 @@
 <blockquote>
 <p>Voil&#xE0;, vous avez cr&#xE9;&#xE9; votre t&#xE2;che &#xE0; faire, et bien heureusement pour vous, vous arrivez au bout de la premi&#xE8;re.</p>
 <p>Il est temps de la compl&#xE9;ter et de la faire dispara&#xEE;tre de cette longue liste... Pour cela, c&apos;est tr&#xE8;s simple. Regardez donc &#xE0; gauche de votre todo. Un cercle vide cliquable s&apos;y trouve. Afin de signifier &#xE0; l&apos;application que votre t&#xE2;che est termin&#xE9;e, vous n&apos;avez qu&apos;&#xE0; cocher cette case !</p>
-<p><img src="./manual/asset/premi&#xE8;ret&#xE2;checompl&#xE9;t&#xE9;e.jpg" alt="premierecompleted"></p>
+<p><img src="./manual/./manual/asset/premi&#xE8;ret&#xE2;checompl&#xE9;t&#xE9;e.jpg" alt="premierecompleted"></p>
 </blockquote>
 <ol start="4">
 <li><h3 id="filtres-pour-g&#xE9;rer-vos-todos--">Filtres pour g&#xE9;rer vos todos :</h3></li>
 </ol>
 <blockquote>
 <p>Voil&#xE0;, vous avez dix todos, donc quatre sont termin&#xE9;es. Le probl&#xE8;me, c&apos;est que vous ne vous y retrouvez plus bien. Certaines sont barr&#xE9;es, d&apos;autres non... Comment trier celles qui sont encore actives de celle qui sont compl&#xE9;t&#xE9;es ?</p>
-<p><img src="./manual/asset/liste10todos.jpg" alt="liste10todos"></p>
+<p><img src="./manual/./manual/asset/liste10todos.jpg" alt="liste10todos"></p>
 <p>C&apos;est tr&#xE8;s simple. Jetons un oeil &#xE0; l&apos;interface, notamment aux trois boutons situ&#xE9;s sous la liste des todos. Pour le moment, le filtre actif est <em>all</em>, mais il y en a deux autres : <em>active</em> et <em>completed</em>.</p>
 <p>Admettons que vous vouliez avoir acc&#xE8;s &#xE0; vos t&#xE2;ches encore en cours, c&apos;est &#xE0; dire celles qui sont encore actives... Il vous suffit de cliquer sur <em>active</em> et de laisser l&apos;application se charger du tri !</p>
-<p><img src="./manual/asset/testactivetodos.jpg" alt="testactive"></p>
+<p><img src="./manual/./manual/asset/testactivetodos.jpg" alt="testactive"></p>
 <p>De la m&#xEA;me fa&#xE7;on, cliquez sur <em>completed</em> pour acc&#xE9;der &#xE0; la liste de celles qui ont d&#xE9;j&#xE0; &#xE9;t&#xE9; compl&#xE9;t&#xE9;es.</p>
 </blockquote>
 <ol start="5">
@@ -95,7 +96,7 @@
 </ol>
 <blockquote>
 <p>Vous avez termin&#xE9; quatre t&#xE2;ches. F&#xE9;licitations ! Mais maintenant, ces derni&#xE8;res vous d&#xE9;rangent, et de toute fa&#xE7;on, vous n&apos;en avez plus besoin... Que faire d&apos;elles ? Eh bien vous pouvez tout simplement les supprimer. C&apos;est ce &#xE0; quoi sert le bouton en bas &#xE0; droite appel&#xE9; <em>clear completed</em>.</p>
-<p><img src="./manual/asset/testcompletedtodos.jpg" alt="clearbutton"></p>
+<p><img src="./manual/./manual/asset/testcompletedtodos.jpg" alt="clearbutton"></p>
 </blockquote>
 </div>
 </div>
