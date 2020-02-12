@@ -140,14 +140,4 @@ export default class Store {
 			callback.call(this, todos);
 		}
 		
-		/**
-		* Will drop all storage and start fresh
-		*
-		* @param {function} callback The callback to fire after dropping the data
-		*/	
-		drop(callback) {
-			var data = {todos: []};
-			localStorage[this._dbName] = JSON.stringify(data);
-			callback.call(this, data.todos);
-		}
 	}
