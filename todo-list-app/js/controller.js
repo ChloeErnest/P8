@@ -117,16 +117,8 @@
 		
 		editItemSave(id, title) {
 			var self = this;
-			//TODO essai avec un opérateur ternaire à faire vérifier
-			//title[0] === " " ? title = title.slice(1) : title[title.length-1] === " " ? title = title.slice(0, -1) : title.slice(0, 0);
 			
-			while (title[0] === " ") { // TODO remplacer par une ligne de code
-				title = title.slice(1);
-			}
-			
-			while (title[title.length-1] === " ") {
-				title = title.slice(0, -1);
-			} //stop
+			title = title.trim();
 			
 			if (title.length !== 0) {
 				self.model.update(id, {title: title}, function () {
@@ -157,7 +149,7 @@
 		*/
 		removeItem(id) {
 			var self = this;
-						
+
 			self.model.remove(id, function () {
 				self.view.render('removeItem', id);
 			});
