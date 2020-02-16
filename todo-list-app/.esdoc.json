@@ -1,1 +1,1 @@
-{ "source": "./js", "destination": "./docs", "plugins": [{"name": "esdoc-standard-plugin", "option": {"manual": {"index":"./manual/audit.md", "asset": "./manual/asset", "files": ["./manual/audit.md", "./manual/auditperso.md"]}}}]}
+{ "source": "./js", "destination": "./docs", "plugins": [{"name": "esdoc-standard-plugin", "option": {"manual": {"index":"./manual/audit.md", "asset": "./manual/asset", "files": ["./manual/audit.md"]}}}]}

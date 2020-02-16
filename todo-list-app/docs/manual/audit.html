@@ -31,13 +31,117 @@
 <div data-ice="manual">
     <ul class="manual-toc">
       
-    <li data-ice="manualNav" class="indent-h1" data-link="manual/audit.html"><a href="manual/audit.html" data-ice="link">audit du site concurrent</a></li>
+    <li data-ice="manualNav" class="indent-h2" data-link="manual/audit.html"><a href="manual/audit.html#nombre-de-requ&#xEA;tes-sur-notre-application" data-ice="link">Nombre de requ&#xEA;tes sur notre application</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/audit.html"><a href="manual/audit.html#nombre-de-requ&#xEA;tes-sur-le-site-concurrent" data-ice="link">Nombre de requ&#xEA;tes sur le site concurrent</a></li>
 </ul>
   </div>
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="audit-du-site-concurrent">audit du site concurrent</h1><p>blablabla</p>
+<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><table>
+<thead>
+<tr>
+<th></th>
+<th>Notre application</th>
+<th>Le site concurrent</th>
+<th>Conseils pour le site concurrent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><img src="./manual/./manual/asset/auditperso.jpg" alt="auditperso"></td>
+<td><img src="./manual/./manual/asset/auditconcu.jpg" alt="auditconcu"></td>
+<td></td>
+</tr>
+<tr>
+<td>Nombre de requ&#xEA;tes :</td>
+<td>11</td>
+<td>95</td>
+<td>Il y a trop de <strong>requ&#xEA;tes</strong> qui prennent du temps concernant <strong>les pubs</strong>.</td>
+</tr>
+<tr>
+<td>Temps de chargement des ressources :</td>
+<td>136ms</td>
+<td>2.06s</td>
+<td>Sur notre application il y a tr&#xE8;s peu de ressources &#xE0; charger. Dans le site concurrent, il y a <strong>&#xE9;norm&#xE9;ment</strong> de ressources &#xE0; charger (images, scripts, documents...).</td>
+</tr>
+<tr>
+<td>Temps de chargement total de la page :</td>
+<td>137ms</td>
+<td>5.60s</td>
+<td>Temps de chargement total de la page <strong>extr&#xEA;mement long</strong> en raison du <em>nombre de requ&#xEA;tes</em> et de <em>nombreuses ressources lourdes</em>.</td>
+</tr>
+<tr>
+<td>Nombre de scripts :</td>
+<td>7</td>
+<td>30</td>
+<td>Il faudrait <em>r&#xE9;duire le nombre de scripts</em>. Factoriser des fonctions, retirer des boucles et fonctionnalit&#xE9;s inutiles. Il faudrait <strong>ajouter</strong> des <em>fonctions asynchrones</em> pour que le rendu continue pendant le t&#xE9;l&#xE9;chargement du script ou l&apos;attribut <em>defer</em> pour <strong>charger</strong> les scripts en parall&#xE8;le. Nous pourrions aussi tout &#xE0; fait <strong>compiler</strong> les scripts.</td>
+</tr>
+<tr>
+<td>Nombre d&apos;images :</td>
+<td>0</td>
+<td>40</td>
+<td>La plupart des images sont <strong>lourdes</strong>. Dans un premier temps, les passer en format <em>.jpg</em> les rendrait bien moins cons&#xE9;quentes. Ensuite, la plupart <em>peuvent &#xEA;tre remplac&#xE9;es</em> par du <strong>CSS</strong> ou des <strong>ic&#xF4;nes fournies par des biblioth&#xE8;ques</strong> car ce ne sont que des textures de fond ou des ic&#xF4;nes lourdes et qui <em>mettent beaucoup de temps &#xE0; &#xEA;tre t&#xE9;l&#xE9;charg&#xE9;es</em>.</td>
+</tr>
+<tr>
+<td>Nombre d&apos;erreurs dans la consoles :</td>
+<td>0</td>
+<td>3</td>
+<td>Certaines choses <strong>ne chargent pas</strong> dans le site concurrent. Il y a des <em>erreurs</em> dans la <em>console</em> sans doute dues &#xE0; <em>des probl&#xE8;mes</em> <strong>dans le code</strong>. Un code d&apos;erreur <strong>404</strong> appara&#xEE;t concernant <em>une pub</em>. Peut-&#xEA;tre faudrait-il <em>retirer</em> ce qui ralentit la page, surtout si cela ne vient pas d&apos;elle.</td>
+</tr>
+<tr>
+<td>Nombres de font :</td>
+<td>0</td>
+<td>2</td>
+<td>Elles sont justement charg&#xE9;es <em>par les pubs</em>, qui en plus d&apos;&#xEA;tre <strong>lourdes</strong>, chargent des <em>choses suppl&#xE9;mentaires</em> alors qu&apos;il y a d&#xE9;j&#xE0; <strong>beaucoup</strong> de ressources &#xE0; t&#xE9;l&#xE9;charger comme cela.</td>
+</tr>
+<tr>
+<td>Nombre de documents :</td>
+<td>1</td>
+<td>11</td>
+<td>Presque <strong>tous</strong> concernent des <em>pubs</em> (encore une fois) ou des <em>widgets</em> ajout&#xE9;s en bas de page. S&apos;ils ne sont pas utiles, peut-&#xEA;tre serait-il judicieux de les <em>supprimer</em>. Ici, le plus lourd = <strong>19KB</strong> et met <strong>218ms</strong> &#xE0; charger et concerne encore une fois une <em>publicit&#xE9;</em>. L&apos;un d&apos;eux affiche d&apos;ailleurs le status <strong>404</strong> (not found) et concerne <em>l&apos;apis Google</em>.</td>
+</tr>
+<tr>
+<td>Requ&#xEA;te la plus longue :</td>
+<td>&quot;view.js&quot; = 46ms</td>
+<td>&quot;texture.png&quot; = 656ms</td>
+<td>Ici, nous sommes face au <strong>majeur probl&#xE8;me</strong> du <em>site concurrent</em>. Il y a <strong>9 requ&#xEA;tes</strong> qui prennent plus de <strong>200ms</strong> &#xE0; s&apos;ex&#xE9;cuter et <strong>35</strong> de plus de <strong>100ms</strong>. La plupart sont <strong>uniquement</strong> des <em>images</em> ! La plupart peuvent &#xEA;tre simplement <em>retir&#xE9;es</em>. La plupart des <em>requ&#xEA;tes</em> les plus <em>lourdes</em> sont quant &#xE0; elles presque uniquement li&#xE9;es <strong>aux pubs</strong> ou <strong>&#xE0; jQuery</strong>, qui pourrait &#xEA;tre remplac&#xE9;es par des m&#xE9;thodes plus modernes utilisant pour autant la m&#xEA;me technologie.</td>
+</tr>
+<tr>
+<td>Temps de loading :</td>
+<td>44ms</td>
+<td>4ms</td>
+<td>Il faut r&#xE9;duire le nombre de <strong>scripts</strong> et de <strong>ressources</strong> &#xE0; <em>t&#xE9;l&#xE9;charger</em>.</td>
+</tr>
+<tr>
+<td>Temps de scripting :</td>
+<td>1080ms</td>
+<td>24ms</td>
+<td>Il faut mettre en oeuvre les conseils donn&#xE9;s <em>ci-dessus</em> pour <strong>r&#xE9;duire</strong> <em>l&apos;impact</em> des fichiers <em>javascript</em> sur la <em>dur&#xE9;e de chargement</em> de la page.</td>
+</tr>
+<tr>
+<td>Temps de rendering :</td>
+<td>78ms</td>
+<td>8ms</td>
+<td>Utiliser les scripts asynchrones permettrait un rendu plus rapide durant le t&#xE9;l&#xE9;chargement m&#xEA;me des scripts.</td>
+</tr>
+<tr>
+<td>S&#xE9;curit&#xE9; :</td>
+<td>Mauvaise</td>
+<td>Elev&#xE9;e</td>
+<td>Notre application tournant sur un <em>serveur local</em>, elle n&apos;utilise <em>pas</em> HTTPS, ceci dit, c&apos;est quelque chose qui, de nos jours, devrait &#xEA;tre utilis&#xE9; par <strong>tous</strong> les sites. D&#xE9;sormais, ce n&apos;est plus forc&#xE9;ment payant et il existe de nombreux moyens d&apos;assurer une <strong>s&#xE9;curit&#xE9; suffisante</strong> aux utilisateurs. De plus, <em>deux librairies javascript</em> qui sont utilis&#xE9;es ici sont connues pour poss&#xE9;der des <em>vuln&#xE9;rabilit&#xE9;s</em>. (Ici, il s&apos;agit surtout de jQuery).</td>
+</tr>
+<tr>
+<td>Affichage :</td>
+<td></td>
+<td></td>
+<td>Il faudrait penser &#xE0; <em>retirer</em> le <strong>code CSS</strong> <em>non utilis&#xE9;</em> dans le code (information fournie par un audit effectu&#xE9; avec les outils de d&#xE9;veloppement de Google Chrome). Les <em>couleurs</em> pourraient &#xEA;tre mieux choisies (plus contrast&#xE9;es), les <em>polices d&apos;&#xE9;criture</em> plus sobres pour &#xEA;tre charg&#xE9;es plus rapidement. La page n&apos;est d&apos;ailleurs pas <em>interactive sur mobile</em> <strong>avant 10sec</strong>, sans doute &#xE0; cause d&apos;un style <em>trop complexe et lourd</em> qu&apos;il serait tout &#xE0; fait possible de <em>simplifier</em>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="nombre-de-requ&#xEA;tes-sur-notre-application">Nombre de requ&#xEA;tes sur notre application</h2><p><img src="./manual/./manual/asset/networkperso.jpg" alt="networkperso"></p>
+<h2 id="nombre-de-requ&#xEA;tes-sur-le-site-concurrent">Nombre de requ&#xEA;tes sur le site concurrent</h2><p><img src="./manual/./manual/asset/networkconcu.jpg" alt="networkconcu"></p>
 </div>
 </div>
 

@@ -1,7 +1,7 @@
 {
-  "coverage": "68.35%",
-  "expectCount": 79,
-  "actualCount": 54,
+  "coverage": "67.94%",
+  "expectCount": 78,
+  "actualCount": 53,
   "files": {
     "js/app.js": {
       "expectCount": 3,
@@ -17,9 +17,9 @@
       "undocumentLines": [
         111,
         118,
-        144,
-        266,
-        274
+        136,
+        248,
+        256
       ]
     },
     "js/helpers.js": {
@@ -35,8 +35,8 @@
       ]
     },
     "js/store.js": {
-      "expectCount": 9,
-      "actualCount": 8,
+      "expectCount": 8,
+      "actualCount": 7,
       "undocumentLines": [
         16
       ]

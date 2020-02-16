@@ -1,128 +1,30 @@
-# audit du site concurrent
 
-Premier point à noter, l'application met du temps à s'afficher. La liste s'affiche après coup, les publicités s'affichent avant l'affichage des tâches elles-mêmes...
+|                                       | Notre application  | Le site concurrent   | Conseils pour le site concurrent |
+|---------------------------------------|--------------------|--------------------- |----------------------------------|
+||![auditperso](./manual/asset/auditperso.jpg)|![auditconcu](./manual/asset/auditconcu.jpg)||
+| Nombre de requêtes :                  |11                  |95                    |Il y a trop de **requêtes** qui prennent du temps concernant **les pubs**.|
+| Temps de chargement des ressources :  |136ms               |2.06s                 |Sur notre application il y a très peu de ressources à charger. Dans le site concurrent, il y a **énormément** de ressources à charger (images, scripts, documents...).|
+| Temps de chargement total de la page :|137ms               |5.60s                 |Temps de chargement total de la page **extrêmement long** en raison du *nombre de requêtes* et de *nombreuses ressources lourdes*.|
+| Nombre de scripts :                   |7                   |30                    |Il faudrait *réduire le nombre de scripts*. Factoriser des fonctions, retirer des boucles et fonctionnalités inutiles. Il faudrait **ajouter** des *fonctions asynchrones* pour que le rendu continue pendant le téléchargement du script ou l'attribut *defer* pour **charger** les scripts en parallèle. Nous pourrions aussi tout à fait **compiler** les scripts.|
+| Nombre d'images :                     |0                   |40                    |La plupart des images sont **lourdes**. Dans un premier temps, les passer en format *.jpg* les rendrait bien moins conséquentes. Ensuite, la plupart *peuvent être remplacées* par du **CSS** ou des **icônes fournies par des bibliothèques** car ce ne sont que des textures de fond ou des icônes lourdes et qui *mettent beaucoup de temps à être téléchargées*.|
+| Nombre d'erreurs dans la consoles :   |0                   |3                     |Certaines choses **ne chargent pas** dans le site concurrent. Il y a des *erreurs* dans la *console* sans doute dues à *des problèmes* **dans le code**. Un code d'erreur **404** apparaît concernant *une pub*. Peut-être faudrait-il *retirer* ce qui ralentit la page, surtout si cela ne vient pas d'elle.|
+| Nombres de font :                     |0                   |2                     |Elles sont justement chargées *par les pubs*, qui en plus d'être **lourdes**, chargent des *choses supplémentaires* alors qu'il y a déjà **beaucoup** de ressources à télécharger comme cela.|
+| Nombre de documents :                 |1                   |11                    |Presque **tous** concernent des *pubs* (encore une fois) ou des *widgets* ajoutés en bas de page. S'ils ne sont pas utiles, peut-être serait-il judicieux de les *supprimer*. Ici, le plus lourd = **19KB** et met **218ms** à charger et concerne encore une fois une *publicité*. L'un d'eux affiche d'ailleurs le status **404** (not found) et concerne *l'apis Google*.|
+| Requête la plus longue :              |"view.js" = 46ms    |"texture.png" = 656ms |Ici, nous sommes face au **majeur problème** du *site concurrent*. Il y a **9 requêtes** qui prennent plus de **200ms** à s'exécuter et **35** de plus de **100ms**. La plupart sont **uniquement** des *images* ! La plupart peuvent être simplement *retirées*. La plupart des *requêtes* les plus *lourdes* sont quant à elles presque uniquement liées **aux pubs** ou **à jQuery**, qui pourrait être remplacées par des méthodes plus modernes utilisant pour autant la même technologie.|
+| Temps de loading :                    |44ms                |4ms                      |Il faut réduire le nombre de **scripts** et de **ressources** à *télécharger*.                                  |
+| Temps de scripting :                  |1080ms              |24ms                      |Il faut mettre en oeuvre les conseils donnés *ci-dessus* pour **réduire** *l'impact* des fichiers *javascript* sur la *durée de chargement* de la page.                                  |
+| Temps de rendering :                  |78ms                |8ms                      |Utiliser les scripts asynchrones permettrait un rendu plus rapide durant le téléchargement même des scripts.                                  |
+| Sécurité :                            |Mauvaise            |Elevée                |Notre application tournant sur un *serveur local*, elle n'utilise *pas* HTTPS, ceci dit, c'est quelque chose qui, de nos jours, devrait être utilisé par **tous** les sites. Désormais, ce n'est plus forcément payant et il existe de nombreux moyens d'assurer une **sécurité suffisante** aux utilisateurs. De plus, *deux librairies javascript* qui sont utilisées ici sont connues pour posséder des *vulnérabilités*. (Ici, il s'agit surtout de jQuery).                                  |
+| Affichage :                           | | | Il faudrait penser à *retirer* le **code CSS** *non utilisé* dans le code (information fournie par un audit effectué avec les outils de développement de Google Chrome). Les *couleurs* pourraient être mieux choisies (plus contrastées), les *polices d'écriture* plus sobres pour être chargées plus rapidement. La page n'est d'ailleurs pas *interactive sur mobile* **avant 10sec**, sans doute à cause d'un style *trop complexe et lourd* qu'il serait tout à fait possible de *simplifier*. |
 
-Beaucoup de fonctionnalités font des erreurs dans la console...
+## Nombre de requêtes sur notre application
 
-Je ne vois pas l'intérêt non plus de la différence entre "Projects" et "Today's Tasks" sachant qu'on ne peut pas mettre de todo dans les projets qui correspondraient d'une façon ou d'une autre.
+Il est aussi possible de voir le temps de téléchargement des ressources et le temps de chargement complet au bas de l'image.
 
-Cela dit, le système de filtres dans les tâches est intéressant, notamment le tri par ordre alphabétique, la mise en highlight des trois premières tâches...
+![networkperso](./manual/asset/networkperso.jpg)
 
-Pouvoir repousser une tâche au lendemain est aussi intéressant, mais je ne pense pas que ce soit indispensable. Ce n'est pas très intuitif non plus.
+## Nombre de requêtes sur le site concurrent
 
-L'ajout de nouvelles listes ou de catégories est intéressant.
-****
-****
-## outil network de Google Chrome
-****
-Le dernier script à être exécuté est celui qui va chercher favicon.ico (158ms).
+Il est aussi possible de voir le temps de téléchargement des ressources et le temps de chargement complet au bas de l'image.
 
-Il y a beaucoup de scripts javascript, notamment du jquery.
-
-Il y a beaucoup d'images, certaines très lourdes, les plus lentes mettant jusqu'à 510ms et 470ms à charger.
-
-Il y a une "Doc" qui affiche un code d'erreur 404 dans l'outil network : "fastbutton".
-
-Dans ce même onglet, il y a 2 pubs(googleads), dont une qui met beaucoup de temps à charger (444ms).
-****
-****
-## outil audits
-****
-### notes
-****
-Performance : 35
-
-Accessibility : 38
-
-Best Practices : 57
-
-SEO : 78
-****
-### performance
-****
-Deux problèmes de performance sont dûs au chargement des polices d'écritures et des images. Le DOM ne charge pas assez vite.
-
-Ensuite, deux autres problèmes (rouges, 7.1 et 12.9sec) sont dûs aux scripts qui ne sont pas optimisés. Du coup c'est très lent et cela se répercute sur les performances de l'application. Le temps entre le moment où la page charge et le moment où l'utilisateur peut intéragir avec l'application est beaucoup trop long.
-
-Pour finir, la tâche la plus longue de l'application met 1.100ms. C'est dû à tout ce qui se passe plus haut. 
-****
-### accessibilité
-****
-L'audit nous dit que les couleurs choisies ne sont pas suffisamment contrastées.
-
-Il y aurait un problème d'id, sur la page, qui ne serait pas unique.
-
-Il manque des noms et des labels que certaines balises.
-
-Il n'y a pas de langue sur les balises html.
-****
-### Best practices
-****
-L'application n'utilise pas HTTPS, ce qui réduit la sécurité. De même pour les ressources de l'application.
-
-Les scripts utilisent des formulations réputées pour être lentes.
-
-Les scripts utilisent des librairies connues pour avoir des vulnérabilités en terme de sécurité.
-
-Comme dit précédemment, il y a des erreurs dans la console.
-****
-### Autre
-****
-L'appli n'est pas suffisamment mobile friendly. 
-Beaucoup d'éléments manquent de balises "alt".
-****
-### Progressive Web App
-****
-La page ne sera pas suffisamment rapide pour les mobiles (elle ne l'est déjà pas pour les laptops) (elle n'est intéractive qu'au bout de 13.8sec).
-
-L'application n'est pas utilisable hors ligne, même si c'est plutôt normal pour ce genre d'appli.
-
-****
-****
-
-## Dareboost
-****
-### Notes :
-****
-62% (encore nettement sous la norme)
-
-12 problèmes.
-
-11 améliorations.
-
-68 succès.
-****
-### Sécurité :
-****
-0/100.
-
-Il faudrait utiliser HTTPS pour collecter des données sensibles.
-La langue n'est pas spécifiée.
-Il manque une politique de sécurité sur la provenance des ressources.
-****
-### Requêtes :
-****
-L'une d'elle est inaccessible. Le problème peut venir du code, du serveur, ou des services utilisés qui ne répondent pas.
-
-Il manque une politique de cache avec Apache dans les requêtes. (Cache-Control, ETag, Expires)
-
-Il serait possible d'économiser des requêtes à l'aide de sprites CSS.
-
-Il y a deux dépendances critiques qui risquent de rendre le site indisponible si l'un des fournisseurs rencontre un problème.
-****
-### Javascript :
-****
-La page doit charger des scripts trop longs et lourds. Il faudrait les séparer en plusieurs morceaux pour les faire charger en différé.
-****
-### jQuery :
-****
-Ce n'est pas la bonne version de jQuery et il faudrait envisager d'utiliser une autre version.
-****
-### Référencement :
-****
-Il n'y a pas d'attribut alt sur les images.
-****
-### Qualité : 
-****
-Certains éléments utilisent les mêmes identifiants.
-
+![networkconcu](./manual/asset/networkconcu.jpg)

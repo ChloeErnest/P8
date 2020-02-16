@@ -163,16 +163,8 @@
 		
 		editItemSave(id, title) {
 			var self = this;
-			//TODO essai avec un op&#xE9;rateur ternaire &#xE0; faire v&#xE9;rifier
-			//title[0] === &quot; &quot; ? title = title.slice(1) : title[title.length-1] === &quot; &quot; ? title = title.slice(0, -1) : title.slice(0, 0);
 			
-			while (title[0] === &quot; &quot;) { // TODO remplacer par une ligne de code
-				title = title.slice(1);
-			}
-			
-			while (title[title.length-1] === &quot; &quot;) {
-				title = title.slice(0, -1);
-			} //stop
+			title = title.trim();
 			
 			if (title.length !== 0) {
 				self.model.update(id, {title: title}, function () {
@@ -203,17 +195,7 @@
 		*/
 		removeItem(id) {
 			var self = this;
-			var items;
-			self.model.read(function(data) {
-				items = data;
-			});
-			
-			items.forEach(function(item) {
-				if (item.id === id) {
-					console.log(&quot;Element with ID: &quot; + id + &quot; has been removed.&quot;);
-				}
-			});
-			
+
 			self.model.remove(id, function () {
 				self.view.render(&apos;removeItem&apos;, id);
 			});

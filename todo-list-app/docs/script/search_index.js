@@ -534,12 +534,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "js/store.js~store#drop",
-    "class/js/store.js~Store.html#instance-method-drop",
-    "js/store.js~Store#drop",
-    "method"
-  ],
-  [
     "js/store.js~store#find",
     "class/js/store.js~Store.html#instance-method-find",
     "js/store.js~Store#find",

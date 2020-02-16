@@ -175,16 +175,9 @@ export default class Store {
 		remove(id, callback) {
 			var data = JSON.parse(localStorage[this._dbName]);
 			var todos = data.todos;
-			var todoId;
-			
+
 			for (var i = 0; i &lt; todos.length; i++) {
 				if (todos[i].id == id) {
-					todoId = todos[i].id;
-				}
-			}
-			
-			for (var i = 0; i &lt; todos.length; i++) {
-				if (todos[i].id == todoId) {
 					todos.splice(i, 1);
 				}
 			}
@@ -193,16 +186,6 @@ export default class Store {
 			callback.call(this, todos);
 		}
 		
-		/**
-		* Will drop all storage and start fresh
-		*
-		* @param {function} callback The callback to fire after dropping the data
-		*/	
-		drop(callback) {
-			var data = {todos: []};
-			localStorage[this._dbName] = JSON.stringify(data);
-			callback.call(this, data.todos);
-		}
 	}</code></pre>
 
 </div>
