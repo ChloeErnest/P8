@@ -31,7 +31,8 @@
 <div data-ice="manual">
     <ul class="manual-toc">
       
-    <li data-ice="manualNav" class="indent-h2" data-link="manual/audit.html"><a href="manual/audit.html#nombre-de-requ&#xEA;tes-sur-notre-application--" data-ice="link">Nombre de requ&#xEA;tes sur notre application :</a></li>
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/audit.html"><a href="manual/audit.html" data-ice="link">Audit</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/audit.html"><a href="manual/audit.html#nombre-de-requ&#xEA;tes-sur-notre-application--" data-ice="link">Nombre de requ&#xEA;tes sur notre application :</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/audit.html"><a href="manual/audit.html#nombre-de-requ&#xEA;tes-sur-le-site-concurrent--" data-ice="link">Nombre de requ&#xEA;tes sur le site concurrent :</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/audit.html"><a href="manual/audit.html#performances-des-deux-sites--" data-ice="link">Performances des deux sites :</a></li>
 </ul>
@@ -40,7 +41,15 @@
 </nav>
 
 <div class="content" data-ice="content"><div class="github-markdown">
-  <div class="manual-user-index" data-ice="manualUserIndex"><table>
+  
+
+  
+
+  <div class="manual-cards">
+    
+  <div class="manual-card-wrap" data-ice="cards">
+      <div class="manual-card">
+        <div data-ice="card"><h1>Audit</h1><hr><table>
 <thead>
 <tr>
 <th></th>
@@ -52,15 +61,15 @@
 <tbody>
 <tr>
 <td></td>
-<td><img src="./manual/asset/auditperso.jpg" alt="auditperso"></td>
-<td><img src="./manual/asset/auditconcu.jpg" alt="auditconcu"></td>
+<td><img src="./manual/./asset/auditperso.jpg" alt="auditperso"></td>
+<td><img src="./manual/./asset/auditconcu.jpg" alt="auditconcu"></td>
 <td></td>
 </tr>
 <tr>
 <td>Nombre de requ&#xEA;tes :</td>
 <td>11</td>
 <td>95</td>
-<td>Il y a trop de <strong>requ&#xEA;tes</strong> qui prennent du temps concernant <strong>les pubs</strong>.</td>
+<td>Il y a trop de <strong>requ&#xEA;tes</strong> qui prennent du temps concernant <strong>les pubs</strong>. On pourrait aussi transformer les images en sprites CSS pour r&#xE9;duire le nombre d&apos;images.</td>
 </tr>
 <tr>
 <td>Temps de chargement des ressources :</td>
@@ -78,22 +87,22 @@
 <td>Nombre de scripts :</td>
 <td>7</td>
 <td>30</td>
-<td>Il faudrait <em>r&#xE9;duire le nombre de scripts</em>. Factoriser des fonctions, retirer des boucles et fonctionnalit&#xE9;s inutiles. Il faudrait <strong>ajouter</strong> des <em>fonctions asynchrones</em> pour que le rendu continue pendant le t&#xE9;l&#xE9;chargement du script ou l&apos;attribut <em>defer</em> pour <strong>charger</strong> les scripts en parall&#xE8;le. Nous pourrions aussi tout &#xE0; fait <strong>compiler</strong> les scripts.</td>
+<td>Il faudrait <em>r&#xE9;duire le nombre de scripts</em>. Factoriser des fonctions, retirer des boucles et fonctionnalit&#xE9;s inutiles. Il faudrait charger les scripts de fa&#xE7;on asynchrone pour que le rendu continue pendant le t&#xE9;l&#xE9;chargement du script ou l&apos;attribut <em>defer</em> pour <strong>charger</strong> les scripts en parall&#xE8;le. Nous pourrions aussi tout &#xE0; fait <strong>compiler</strong> les scripts.</td>
 </tr>
 <tr>
 <td>Nombre d&apos;images :</td>
 <td>0</td>
 <td>40</td>
-<td>La plupart des images sont <strong>lourdes</strong>. Dans un premier temps, les passer en format <em>.jpg</em> les rendrait bien moins cons&#xE9;quentes. Ensuite, la plupart <em>peuvent &#xEA;tre remplac&#xE9;es</em> par du <strong>CSS</strong> ou des <strong>ic&#xF4;nes fournies par des biblioth&#xE8;ques</strong> car ce ne sont que des textures de fond ou des ic&#xF4;nes lourdes et qui <em>mettent beaucoup de temps &#xE0; &#xEA;tre t&#xE9;l&#xE9;charg&#xE9;es</em>.</td>
+<td>La plupart des images sont <strong>lourdes</strong>. Dans un premier temps, passer les images (dont les fonds ne sont pas transparents) en format <em>.jpg</em> les rendrait bien moins cons&#xE9;quentes. Pour les &#xEE;c&#xF4;nes, le format .svg peut-&#xEA;tre pr&#xE9;conis&#xE9;. Ensuite, la plupart <em>peuvent &#xEA;tre remplac&#xE9;es</em> par du <strong>CSS</strong> ou des <strong>ic&#xF4;nes fournies par des biblioth&#xE8;ques</strong> car ce ne sont que des textures de fond ou des ic&#xF4;nes lourdes et qui <em>mettent beaucoup de temps &#xE0; &#xEA;tre t&#xE9;l&#xE9;charg&#xE9;es</em>.</td>
 </tr>
 <tr>
-<td>Nombre d&apos;erreurs dans la consoles :</td>
+<td>Nombre d&apos;erreurs dans la console :</td>
 <td>0</td>
 <td>3</td>
 <td>Certaines choses <strong>ne chargent pas</strong> dans le site concurrent. Il y a des <em>erreurs</em> dans la <em>console</em> sans doute dues &#xE0; <em>des probl&#xE8;mes</em> <strong>dans le code</strong>. Un code d&apos;erreur <strong>404</strong> appara&#xEE;t concernant <em>une pub</em>. Peut-&#xEA;tre faudrait-il <em>retirer</em> ce qui ralentit la page, surtout si cela ne vient pas d&apos;elle.</td>
 </tr>
 <tr>
-<td>Nombres de font :</td>
+<td>Nombres de fonts :</td>
 <td>0</td>
 <td>2</td>
 <td>Elles sont justement charg&#xE9;es <em>par les pubs</em>, qui en plus d&apos;&#xEA;tre <strong>lourdes</strong>, chargent des <em>choses suppl&#xE9;mentaires</em> alors qu&apos;il y a d&#xE9;j&#xE0; <strong>beaucoup</strong> de ressources &#xE0; t&#xE9;l&#xE9;charger comme cela.</td>
@@ -102,36 +111,36 @@
 <td>Nombre de documents :</td>
 <td>1</td>
 <td>11</td>
-<td>Presque <strong>tous</strong> concernent des <em>pubs</em> (encore une fois) ou des <em>widgets</em> ajout&#xE9;s en bas de page. S&apos;ils ne sont pas utiles, peut-&#xEA;tre serait-il judicieux de les <em>supprimer</em>. Ici, le plus lourd = <strong>19KB</strong> et met <strong>218ms</strong> &#xE0; charger et concerne encore une fois une <em>publicit&#xE9;</em>. L&apos;un d&apos;eux affiche d&apos;ailleurs le status <strong>404</strong> (not found) et concerne <em>l&apos;apis Google</em>.</td>
+<td>Presque <strong>tous</strong> concernent des <em>pubs</em> ou des <em>widgets</em> ajout&#xE9;s en bas de page. S&apos;ils ne sont pas utiles, peut-&#xEA;tre serait-il judicieux de les <em>supprimer</em>. Ici, le plus lourd = <strong>19KB</strong> et met <strong>218ms</strong> &#xE0; charger et concerne encore une fois une <em>publicit&#xE9;</em>. L&apos;un d&apos;eux affiche d&apos;ailleurs le status <strong>404</strong> (not found) et concerne <em>l&apos;apis Google</em>.</td>
 </tr>
 <tr>
 <td>Requ&#xEA;te la plus longue :</td>
 <td>&quot;view.js&quot; = 46ms</td>
 <td>&quot;texture.png&quot; = 656ms</td>
-<td>Ici, nous sommes face au <strong>majeur probl&#xE8;me</strong> du <em>site concurrent</em>. Il y a <strong>9 requ&#xEA;tes</strong> qui prennent plus de <strong>200ms</strong> &#xE0; s&apos;ex&#xE9;cuter et <strong>35</strong> de plus de <strong>100ms</strong>. La plupart sont <strong>uniquement</strong> des <em>images</em> ! La plupart peuvent &#xEA;tre simplement <em>retir&#xE9;es</em>. La plupart des <em>requ&#xEA;tes</em> les plus <em>lourdes</em> sont quant &#xE0; elles presque uniquement li&#xE9;es <strong>aux pubs</strong> ou <strong>&#xE0; jQuery</strong>, qui pourrait &#xEA;tre remplac&#xE9;es par des m&#xE9;thodes plus modernes utilisant pour autant la m&#xEA;me technologie.</td>
+<td>Ici, nous sommes face au <strong>probl&#xE8;me majeur</strong> du <em>site concurrent</em>. Il y a <strong>9 requ&#xEA;tes</strong> qui prennent plus de <strong>200ms</strong> &#xE0; s&apos;ex&#xE9;cuter et <strong>35</strong> de plus de <strong>100ms</strong>. La plupart sont <strong>uniquement</strong> des <em>images</em> ! La plupart peuvent &#xEA;tre simplement <em>retir&#xE9;es</em>. La plupart des <em>requ&#xEA;tes</em> les plus <em>lourdes</em> sont quant &#xE0; elles presque uniquement li&#xE9;es <strong>aux pubs</strong> ou <strong>&#xE0; jQuery</strong>, qui pourrait &#xEA;tre remplac&#xE9;es par des m&#xE9;thodes plus modernes utilisant pour autant la m&#xEA;me technologie.</td>
 </tr>
 <tr>
 <td>Temps de loading :</td>
-<td>44ms</td>
 <td>4ms</td>
+<td>44ms</td>
 <td>Il faut r&#xE9;duire le nombre de <strong>scripts</strong> et de <strong>ressources</strong> &#xE0; <em>t&#xE9;l&#xE9;charger</em>.</td>
 </tr>
 <tr>
 <td>Temps de scripting :</td>
-<td>1080ms</td>
 <td>24ms</td>
+<td>1080ms</td>
 <td>Il faut mettre en oeuvre les conseils donn&#xE9;s <em>ci-dessus</em> pour <strong>r&#xE9;duire</strong> <em>l&apos;impact</em> des fichiers <em>javascript</em> sur la <em>dur&#xE9;e de chargement</em> de la page.</td>
 </tr>
 <tr>
 <td>Temps de rendering :</td>
-<td>78ms</td>
 <td>8ms</td>
+<td>78ms</td>
 <td>Utiliser les scripts asynchrones permettrait un rendu plus rapide durant le t&#xE9;l&#xE9;chargement m&#xEA;me des scripts.</td>
 </tr>
 <tr>
 <td>S&#xE9;curit&#xE9; :</td>
-<td>Mauvaise</td>
 <td>Elev&#xE9;e</td>
+<td>Mauvaise</td>
 <td>Notre application tournant sur un <em>serveur local</em>, elle n&apos;utilise <em>pas</em> HTTPS, ceci dit, c&apos;est quelque chose qui, de nos jours, devrait &#xEA;tre utilis&#xE9; par <strong>tous</strong> les sites. D&#xE9;sormais, ce n&apos;est plus forc&#xE9;ment payant et il existe de nombreux moyens d&apos;assurer une <strong>s&#xE9;curit&#xE9; suffisante</strong> aux utilisateurs. De plus, <em>deux librairies javascript</em> qui sont utilis&#xE9;es ici sont connues pour poss&#xE9;der des <em>vuln&#xE9;rabilit&#xE9;s</em>. (Ici, il s&apos;agit surtout de jQuery).</td>
 </tr>
 <tr>
@@ -140,21 +149,19 @@
 <td></td>
 <td>Il faudrait penser &#xE0; <em>retirer</em> le <strong>code CSS</strong> <em>non utilis&#xE9;</em> dans le code (information fournie par un audit effectu&#xE9; avec les outils de d&#xE9;veloppement de Google Chrome). Les <em>couleurs</em> pourraient &#xEA;tre mieux choisies (plus contrast&#xE9;es), les <em>polices d&apos;&#xE9;criture</em> plus sobres pour &#xEA;tre charg&#xE9;es plus rapidement. La page n&apos;est d&apos;ailleurs pas <em>interactive sur mobile</em> <strong>avant 10sec</strong>, sans doute &#xE0; cause d&apos;un style <em>trop complexe et lourd</em> qu&apos;il serait tout &#xE0; fait possible de <em>simplifier</em>.</td>
 </tr>
+<tr>
+<td>Am&#xE9;liorations :</td>
+<td></td>
+<td></td>
+<td>Il faudrait <strong>remplir</strong> les champs <em>&quot;title&quot;</em>, <em>&quot;alt&quot;</em> de certains champs qui ne sont <em>pas</em> renseign&#xE9;s. Il faudrait aussi faire attention aux <strong>ids</strong> qui ne sont <em>pas</em> uniques. Il n&apos;y a pas de <strong>labels</strong> dans les <em>formulaires</em>. Il manque des <strong>attributs</strong> &quot;lang&quot; sur les <em>&#xE9;l&#xE9;ments</em> &quot;html&quot;. Il n&apos;y a pas de <em>name=&quot;viewport&quot;</em> sur la <em>balise</em> &quot;meta&quot;.</td>
+</tr>
 </tbody>
-</table>
-<h2 id="nombre-de-requ&#xEA;tes-sur-notre-application--">Nombre de requ&#xEA;tes sur notre application :</h2><p>Il est aussi possible de voir le temps de t&#xE9;l&#xE9;chargement des ressources et le temps de chargement complet au bas de l&apos;image.</p>
-<p><img src="./manual/asset/networkperso.jpg" alt="networkperso"></p>
-<h2 id="nombre-de-requ&#xEA;tes-sur-le-site-concurrent--">Nombre de requ&#xEA;tes sur le site concurrent :</h2><p>Il est aussi possible de voir le temps de t&#xE9;l&#xE9;chargement des ressources et le temps de chargement complet au bas de l&apos;image.</p>
-<p><img src="./manual/asset/networkconcu.jpg" alt="networkconcu"></p>
-<h2 id="performances-des-deux-sites--">Performances des deux sites :</h2><p><img src="./manual/asset/perfperso.jpg" alt="perfperso">
-<img src="./manual/asset/perfconcu.jpg" alt="perfconcu"></p>
+</table><h2>Nombre de requ&#xEA;tes sur notre application :</h2><p>Il est aussi possible de voir le temps de t&#xE9;l&#xE9;chargement des ressources et le temps de chargement complet au bas de l&apos;image.</p><p><img src="./manual/./asset/networkperso.jpg" alt="networkperso"></p><h2>Nombre de requ&#xEA;tes sur le site concurrent :</h2><p>Il est aussi possible de voir le temps de t&#xE9;l&#xE9;chargement des ressources et le temps de chargement complet au bas de l&apos;image.</p><p><img src="./manual/./asset/networkconcu.jpg" alt="networkconcu"></p><h2>Performances des deux sites :</h2><p>&#xC0; gauche notre site, &#xE0; droite le site concurrent :</p><p><img src="./manual/./asset/perfperso.jpg" alt="perfperso">
+<img src="./manual/./asset/perfconcu.jpg" alt="perfconcu"></p></div>
+        <a data-ice="link" href="manual/audit.html"></a>
+      </div>
+    </div>
 </div>
-
-  
-
-  <div class="manual-cards">
-    
-  </div>
 </div>
 </div>
 

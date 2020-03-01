@@ -26,7 +26,7 @@ Vous avez dès lors plusieurs possibilités afin de gérer votre liste.
 
 ****
 
-1. ### Ajout de todos :
+### 1. Ajout de todos :
 
 >Le système d'ajout reste le même que lors de l'ajout de votre première tâche. Dans le cadre de cette démonstration, nous allons en ajouter cinq afin de vous montrer la forme que prendra la liste une fois ceci fait.
 >
@@ -34,7 +34,7 @@ Vous avez dès lors plusieurs possibilités afin de gérer votre liste.
 >
 >Vous voilà avec cinq tâches dans votre liste, tâches qui se suivent dans l'ordre d'ajout.
 
-2. ### Edition d'une todo : 
+### 2. Edition d'une todo : 
 
 >Imaginons que vous vous soyez trompés dans le nom d'une de vos tâches. Sans doute voudrez-vous la corriger ? Pour cela, rien de plus simple : double-cliquez sur le nom de cette dernière.
 >
@@ -44,7 +44,7 @@ Vous avez dès lors plusieurs possibilités afin de gérer votre liste.
 >
 >![editiontacheterminee](./manual/asset/modificationnomtâche.jpg)
 
-3. ### Compléter une todo :
+### 3. Compléter une todo :
 
 >Voilà, vous avez créé votre tâche à faire, et bien heureusement pour vous, vous arrivez au bout de la première.
 >
@@ -52,7 +52,7 @@ Vous avez dès lors plusieurs possibilités afin de gérer votre liste.
 >
 >![premierecompleted](./manual/asset/premièretâchecomplétée.jpg)
 
-4. ### Filtres pour gérer vos todos :
+### 4. Filtres pour gérer vos todos :
 
 >Voilà, vous avez dix todos, donc quatre sont terminées. Le problème, c'est que vous ne vous y retrouvez plus bien. Certaines sont barrées, d'autres non... Comment trier celles qui sont encore actives de celle qui sont complétées ?
 >
@@ -66,11 +66,37 @@ Vous avez dès lors plusieurs possibilités afin de gérer votre liste.
 >
 >De la même façon, cliquez sur *completed* pour accéder à la liste de celles qui ont déjà été complétées.
 
-5. ### Suppression des todos complétées accumulées
+### 5. Suppression des todos complétées accumulées
 
 >Vous avez terminé quatre tâches. Félicitations ! Mais maintenant, ces dernières vous dérangent, et de toute façon, vous n'en avez plus besoin... Que faire d'elles ? Eh bien vous pouvez tout simplement les supprimer. C'est ce à quoi sert le bouton en bas à droite appelé *clear completed*.
 >
 >![clearbutton](./manual/asset/testcompletedtodos.jpg)
+
+### 6. Lancer le projet :
+
+Dans la console, utiliser 
+
+```sh
+npm install
+```
+
+Puis, pour lancer l'application en local, utiliser : 
+
+```sh
+npm run start
+```
+
+Pour lancer la doc :
+
+```sh
+npm run docs
+```
+
+Pour lancer les tests :
+
+```sh
+npm run test
+```
 
 
 
