@@ -90,7 +90,7 @@ export default class Store {
 			
 			callback = callback || function () {};
 			
-			var newId = 0;
+			var newId = 1;
 			if (todos.length > 0) {
 				newId = todos[todos.length - 1].id + 1;
 			}

@@ -2,7 +2,7 @@
 ****
 |                                       | Notre application  | Le site concurrent   | Conseils pour le site concurrent |
 |---------------------------------------|--------------------|--------------------- |----------------------------------|
-||![auditperso](./asset/auditperso.jpg)|![auditconcu](./asset/auditconcu.jpg)||
+||![auditperso](./asset/auditperso.jpg)|![auditconcu](./asset/auditconcu.jpg)|Lien du [Site concurrent](http://todolistme.net/)|
 | Nombre de requêtes :                  |11                  |95                    |Il y a trop de **requêtes** qui prennent du temps concernant **les pubs**. On pourrait aussi transformer les images en sprites CSS pour réduire le nombre d'images.|
 | Temps de chargement des ressources :  |136ms               |2.06s                 |Sur notre application il y a très peu de ressources à charger. Dans le site concurrent, il y a **énormément** de ressources à charger (images, scripts, documents...).|
 | Temps de chargement total de la page :|137ms               |5.60s                 |Temps de chargement total de la page **extrêmement long** en raison du *nombre de requêtes* et de *nombreuses ressources lourdes*.|
